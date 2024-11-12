@@ -46,7 +46,7 @@ Yarn Package Manager allows you to install packages needed for web development, 
 Frontend development is done using React.js, which combines JavaScript with HTML and CSS.
 
 ### Directory Structure
-
+```
 radiohost
 ├── node_modules        # Installed npm packages (make sure .gitignore ignores this)
 ├── public              # Public assets (don’t worry about this)
@@ -59,7 +59,7 @@ radiohost
     └── index.js        # Entry point (don’t modify this)
 ├── package.json        # Project blueprint and dependencies
 └── .gitignore          # Ensure node_modules is ignored
-
+```
 
 ### How to Get It Running
 
