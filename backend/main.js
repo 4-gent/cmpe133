@@ -8,6 +8,8 @@ const fs = require('fs') // Importing the File System module
 const formData = require('form-data') // Importing the Form Data module
 const cors = require('cors') // Importing the CORS middleware
 
+
+
 require('dotenv').config() // Loading environment variables from .env file
 
 const app = express() // Creating an instance of the Express application
@@ -29,6 +31,7 @@ const users = process.env.USERS_COLLECTION // Getting the collection name from e
 app.use(express.static(path.join(__dirname, '../radiohost/public'))) // Serving static files from the 'public' directory
 app.use(bodyParser.urlencoded({ extended: true })) // Using the Body Parser middleware to parse URL-encoded data
 app.use(bodyParser.json()) // Using the Body Parser middleware to parse JSON data
+
 
 app.post('/register', async(req, res) => {
 	try{
@@ -76,6 +79,8 @@ app.post('/login', async(req, res) => { // Handling POST requests to '/login' en
 		await client.close() // Closing the MongoDB connection
 	}
 })
+
+
 
 app.listen(PORT, () => { // Starting the server and listening on the specified port
 	console.log(`Listening on ${PORT}`) // Logging a message indicating that the server is running
