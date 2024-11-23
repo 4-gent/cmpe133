@@ -7,6 +7,10 @@ export default function Registration() {
     const [email, setEmail] = useState('');
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+    
+    //testing spotify
+    
+    window.location.href = 'http://localhost:4000/auth';
 
     const handleRegister = async(e) => {
         e.preventDefault();

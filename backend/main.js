@@ -7,7 +7,7 @@ const multer = require('multer') // Importing the Multer middleware
 const fs = require('fs') // Importing the File System module
 const formData = require('form-data') // Importing the Form Data module
 const cors = require('cors') // Importing the CORS middleware
-
+const SpotifyWebAPI = require('spotify-web-api-node');
 
 
 require('dotenv').config() // Loading environment variables from .env file
@@ -28,10 +28,18 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
 const dbName = process.env.DATABASE_NAME // Getting the database name from environment variables
 const users = process.env.USERS_COLLECTION // Getting the collection name from environment variables
 
+
 app.use(express.static(path.join(__dirname, '../radiohost/public'))) // Serving static files from the 'public' directory
 app.use(bodyParser.urlencoded({ extended: true })) // Using the Body Parser middleware to parse URL-encoded data
 app.use(bodyParser.json()) // Using the Body Parser middleware to parse JSON data
 
+let myCredentials = {
+	clientId: 'e816d66aadbf4653845af2b70fb826ad',
+	clientSecret: '999949d2e45b4b2fa6104d024b571e16',
+	redirectUri: 'http://localhost:4000/fetchTokens'
+};
+
+const spotifyApi = new SpotifyWebAPI(myCredentials);
 
 app.post('/register', async(req, res) => {
 	try{
@@ -54,6 +62,82 @@ app.post('/register', async(req, res) => {
 		console.log(error) // Logging any errors that occur during the registration process
 	} finally {
 		await client.close() // Closing the MongoDB connection
+	}
+})
+
+app.get('/auth', async(req, res) => {
+	try{
+		let scopes = ['user-library-read', 'user-top-read', 'playlist-read-collaborative', 'streaming'];
+
+		// Setting credentials
+		let authorizeURL = spotifyApi.createAuthorizeURL(scopes);
+		console.log(authorizeURL);
+		res.redirect(authorizeURL);
+		/*
+		res.json({
+			message: authorizeURL
+		});
+		*/
+	} catch (error) {
+		console.log(error) // Logging any errors that occur during the registration process
+	} finally {
+		
+	}
+})
+
+app.get('/fetchTokens', async(req, res) => {
+	try{
+		console.log("auth code is " + req.query.code);
+		
+		await generateToken(req.query.code);
+		console.log("completed authorization");
+		await getElvisAlbums();
+		
+		res.redirect('http://localhost:3000');
+
+	} catch (error) {
+		console.log(error) // Logging any errors that occur during the registration process
+	} finally {
+		
+	}
+})
+
+async function generateToken(Acode){
+    try{
+        
+		let authCode = Acode;
+        let data = await spotifyApi.authorizationCodeGrant(authCode);
+        console.log('The access token expires in ' + data.body['expires_in']);
+        console.log('The access token is ' + data.body['access_token']);
+        console.log('The refresh token is' + data.body['refresh_token']);
+		spotifyApi.setAccessToken(data.body['access_token']);
+        spotifyApi.setRefreshToken(data.body['refresh_token']);
+     
+    } catch(err){
+        console.log("Error occured: ", err);
+    }
+}
+//testing if api works
+async function getElvisAlbums(){
+	spotifyApi.getArtistAlbums('43ZHCT0cAZBISjO8DG9PnE').then(
+		function(data) {
+		  console.log('Artist albums', data.body.items);
+		},
+		function(err) {
+		  console.error(err);
+		}
+	  );
+}
+
+app.get('/saveTokens', async(req, res) => {
+	try{
+		console.log("tokens saved");
+		
+
+	} catch (error) {
+		console.log(error) // Logging any errors that occur during the registration process
+	} finally {
+		
 	}
 })
 

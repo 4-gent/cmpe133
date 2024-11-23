@@ -1,14 +1,14 @@
-const SpotifyAPI = require('spotify-web-api-node');
+const SpotifyWebAPI = require('spotify-web-api-node');
 
 let myCredentials = {
     clientId: 'e816d66aadbf4653845af2b70fb826ad',
     clientSecret: '999949d2e45b4b2fa6104d024b571e16',
-    redirectUri: 'http://localhost:3000/'
+    redirectUri: 'http://localhost:4000/fetchTokens'
 };
 // not sure how to get the url
 let authCode = '';
 
-let spotifyApi = new SpotifyAPI(myCredentials);
+let spotifyApi = new SpotifyWebAPI(myCredentials);
 
 async function generateToken(){
     try{
