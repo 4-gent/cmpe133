@@ -10,7 +10,7 @@ export default function Registration() {
     
     //testing spotify
     
-    window.location.href = 'http://localhost:4000/auth';
+    window.location.href = 'http://localhost:4000/SpotifyAuth/auth';
 
     const handleRegister = async(e) => {
         e.preventDefault();
