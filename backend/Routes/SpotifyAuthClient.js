@@ -5,7 +5,7 @@ const axios = require('axios');
 
 // dont need routes/spotify... since its in same directory
 const SpotifyTokenRoute = require('./SpotifyTokens.js');
-const SpotifySearchTest = require('./search.js');
+
 
 
 const spotifyApi = SpotifyTokenRoute.getSpotifyApi();
@@ -13,7 +13,9 @@ const spotifyApi = SpotifyTokenRoute.getSpotifyApi();
 
 router.get('/auth', async(req, res) => {
 	try{
-		let scopes = ['user-library-read', 'user-top-read', 'playlist-read-collaborative', 'streaming'];
+		let scopes = ['user-library-read', 'user-top-read', 'streaming', 'playlist-read-collaborative', 
+			'user-follow-read', 'playlist-modify-public'
+		];
 
 		// Setting credentials
 		let authorizeURL = spotifyApi.createAuthorizeURL(scopes);
@@ -59,11 +61,23 @@ async function generateToken(Acode){
         
         SpotifyTokenRoute.setTokens(accessToken, refreshToken, expire);
         
+		//can only get user after setting tokens
+		await GetAuthUser();
+		
      
     } catch(err){
         console.log("Error occured: ", err);
     }
 }
+async function GetAuthUser() {
+	spotifyApi.getMe().then(function(data) {
+		//console.log('Some information about the authenticated user', data.body);
+		let username = data.body.id;
+		SpotifyTokenRoute.setUser(username);
+	}, function(err) {
+		console.log('Something went wrong!', err);
+	});
+  }
 
 module.exports = router;
 

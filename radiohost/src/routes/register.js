@@ -8,8 +8,10 @@ export default function Registration() {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     
-    //testing spotify
-    
+    /*testing spotify
+    i coded it so that when you go to the registration page, it authenticates the user
+    we need to do this first then we can access all of spotify api's features.
+    */
     window.location.href = 'http://localhost:4000/SpotifyAuth/auth';
 
     const handleRegister = async(e) => {

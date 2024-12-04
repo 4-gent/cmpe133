@@ -8,6 +8,7 @@ const myCredentials = {
 };
 
 const spotifyApi = new SpotifyWebApi(myCredentials);
+let username = null;
 
 let tokens = {
   accessToken: null,
@@ -24,7 +25,13 @@ const setTokens = (accessToken, refreshToken, expiresIn) => {
   console.log('The refresh token is' + refreshToken);
 };
 
+const setUser = (inputUser) =>{
+  username = inputUser;
+}
+
 // Function to get authenticated spotify client
 const getSpotifyApi = () => spotifyApi;
+const getUsername = () => username;
 
-module.exports = { setTokens, getSpotifyApi };
+
+module.exports = { setTokens, getSpotifyApi, getUsername, setUser };
