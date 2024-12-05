@@ -7,6 +7,14 @@ const multer = require('multer') // Importing the Multer middleware
 const fs = require('fs') // Importing the File System module
 const formData = require('form-data') // Importing the Form Data module
 const cors = require('cors') // Importing the CORS middleware
+const axios = require('axios');
+
+//spotify routes
+const authRoute = require('./Routes/SpotifyAuthClient.js');
+const searchRoute = require('./Routes/search.js');
+const userPlaylistsRoute = require('./Routes/Playlist.js');
+
+
 
 require('dotenv').config() // Loading environment variables from .env file
 
@@ -18,6 +26,11 @@ const corsEnable = {
 }
 app.use(cors(corsEnable)) // Enabling CORS for all routes
 
+app.use('/spotifyAuth', authRoute);
+app.use('/search', searchRoute);
+app.use('/userPlaylists', userPlaylistsRoute);
+
+
 const PORT = process.env.PORT // Getting the port number from environment variables-
 // MongoDB Atlas Connection
 const uri = process.env.ATLAS_URI // Getting the MongoDB connection URI from environment variables
@@ -26,9 +39,12 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
 const dbName = process.env.DATABASE_NAME // Getting the database name from environment variables
 const users = process.env.USERS_COLLECTION // Getting the collection name from environment variables
 
+
 app.use(express.static(path.join(__dirname, '../radiohost/public'))) // Serving static files from the 'public' directory
 app.use(bodyParser.urlencoded({ extended: true })) // Using the Body Parser middleware to parse URL-encoded data
 app.use(bodyParser.json()) // Using the Body Parser middleware to parse JSON data
+
+
 
 app.post('/register', async(req, res) => {
 	try{
@@ -54,6 +70,10 @@ app.post('/register', async(req, res) => {
 	}
 })
 
+
+
+
+
 app.post('/login', async(req, res) => { // Handling POST requests to '/login' endpoint
 	try{
 		await client.connect() // Connecting to the MongoDB server
@@ -76,6 +96,8 @@ app.post('/login', async(req, res) => { // Handling POST requests to '/login' en
 		await client.close() // Closing the MongoDB connection
 	}
 })
+
+
 
 app.listen(PORT, () => { // Starting the server and listening on the specified port
 	console.log(`Listening on ${PORT}`) // Logging a message indicating that the server is running

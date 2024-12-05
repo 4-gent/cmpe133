@@ -7,6 +7,17 @@ import 'react-notifications/lib/notifications.css'
 export default function Login() { // Defining a functional component called Login
     const [email, setEmail] = useState('') // Creating a state variable 'email' and a setter function 'setEmail' using useState hook, initial value is an empty string
     const [password, setPassword] = useState('') // Creating a state variable 'password' and a setter function 'setPassword' using useState hook, initial value is an empty string
+    
+    /*spotify test
+        i coded it so that then you go to login page, it runs the spotify api calls to search, get playlists, etc
+    */
+   
+    /*
+    we need to take what ever we typed in in the search bar and send the request to search
+    right now the search method has a hard coded input
+    */ 
+    const searchres = axios.get('http://localhost:4000/search/searchAll');
+    //const playlistres = axios.get('http://localhost:4000/userPlaylists/UserPlaylists');
 
     const handleLogin = async(e) => { // Defining an asynchronous function called handleLogin, which takes an event object as a parameter
         e.preventDefault() // Preventing the default form submission behavior
