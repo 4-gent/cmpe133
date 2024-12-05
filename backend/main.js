@@ -12,6 +12,7 @@ const axios = require('axios');
 //spotify routes
 const authRoute = require('./Routes/SpotifyAuthClient.js');
 const searchRoute = require('./Routes/search.js');
+const userPlaylistsRoute = require('./Routes/Playlist.js');
 
 
 
@@ -27,6 +28,8 @@ app.use(cors(corsEnable)) // Enabling CORS for all routes
 
 app.use('/spotifyAuth', authRoute);
 app.use('/search', searchRoute);
+app.use('/userPlaylists', userPlaylistsRoute);
+
 
 const PORT = process.env.PORT // Getting the port number from environment variables-
 // MongoDB Atlas Connection
