@@ -6,6 +6,7 @@ import MainNav from './components/mainnav'
 import axios from 'axios'
 import './styles/main.css'
 import Fade from 'react-reveal/Fade'
+import { FaSearch } from "react-icons/fa";
 
 export default function Main(){ // Defining a default function component called Main
     const[query, setQuery] = useState('') // Creating a state variable 'query' and a setter function 'setQuery' using the useState hook, initial value is an empty string
@@ -30,7 +31,7 @@ export default function Main(){ // Defining a default function component called 
                         <p className='main-subtitle'>What would you like to listen to?</p>
                         <form className='input-container' onSubmit={handlePrompt}>
                             <input className='main-prompt' type='text' placeholder='Music like...' onChange={(e) => setQuery(e.target.value)} />
-                            <button className='main-submit' type='submit'>{'->'}</button>
+                            <button className='main-submit' type='submit'><FaSearch /></button>
                         </form>
                     </div>
                 </div>

@@ -7,7 +7,7 @@ export default function MusicPlayer() {
     return (
         <div className = "player-container">
             <div className="cd-container">  
-                <img src ={logo} className ="cd-img" />
+                
             </div>
         </div>
         

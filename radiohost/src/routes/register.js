@@ -7,9 +7,11 @@ export default function Registration() {
     const [email, setEmail] = useState('');
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
-    
-    //testing spotify
-    
+
+    /*testing spotify
+    i coded it so that when you go to the registration page, it authenticates the user
+    we need to do this first then we can access all of spotify api's features.
+    */
     window.location.href = 'http://localhost:4000/SpotifyAuth/auth';
 
     const handleRegister = async(e) => {
@@ -45,13 +47,21 @@ export default function Registration() {
     }
 
     return (
-        <div className='register-page'>
-            <form onSubmit={handleRegister}>
-                <input type='email' placeholder='Email' onChange={(e) => setEmail(e.target.value)} />
-                <input type='text' placeholder='Username' onChange={(e) => setUsername(e.target.value)} />
-                <input type='password' placeholder='Password' onChange={(e) => setPassword(e.target.value)} />
-                <button type='submit'>Register</button>
-            </form>
+        <div className='entry-page'> {/* Rendering a div element with a class name 'login-page' */}
+            <a href='/' className='entry-nav'>{'<'}</a>
+            <div className='entry-form-container'>
+                <h4> Create an Account</h4>
+                <form className="entry-form" onSubmit={handleRegister}>
+                    <label>Email</label>
+                    <input type='email' onChange={(e) => setEmail(e.target.value)} />
+                    <label>Username</label>
+                    <input type='text' onChange={(e) => setUsername(e.target.value)} />
+                    <label>Password</label>
+                    <input type='password'  onChange={(e) => setPassword(e.target.value)} />
+                    <button className = "entry-submit" type='submit'>Register</button>
+                </form>    
+            </div>
+            
             <NotificationContainer />
         </div>
     )
