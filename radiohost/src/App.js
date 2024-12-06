@@ -6,6 +6,7 @@ import Login from './routes/login'
 import Registration from './routes/register'
 import Home from './routes/home'
 import Results from './routes/results'
+import Library from './routes/library'
 
 function App() {
   return (
@@ -16,8 +17,10 @@ function App() {
         <Route path="/" element={<Main />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Registration />} />
-        <Route path="/home" element={<Home />} />
-          <Route path="/results" element={<Results />} />
+        <Route path="/home" element={<Home />}>
+          <Route path="results" element={<Results />} />
+          <Route path="library" element={<Library />} />
+        </Route>
       </Routes>
     </Router>
   );

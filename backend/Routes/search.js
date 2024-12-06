@@ -7,20 +7,24 @@ const spotifyApi = SpotifyTokenRoute.getSpotifyApi();
 
 
 router.get('/searchAll', async(req, res) =>{
-     console.log("search works");
-
-     let musicSearchRes = await musicSearch("Ado");
+    
+    const query = req.query.q;
+    let musicSearchRes = await musicSearch(query);
      //await GetAuthUser();
-     res.send(musicSearchRes);
+     //console.log("Formatted search results:", musicSearchRes);
+     res.json(musicSearchRes);
+
      
  });
 
 async function musicSearch(searchInput){
-    spotifyApi.searchTracks(searchInput).then(function(data) {
+        try {
+        const data = await spotifyApi.searchTracks(searchInput);
           //console.log('Search results: ', data.body.tracks);
           let resArray = data.body.tracks.items;
           let searchRes = [];
-          for (let song of resArray){
+
+          resArray.forEach((song) => {
             let songItem = {
                 songName: song.name,
                 artist: song.artists,
@@ -33,12 +37,12 @@ async function musicSearch(searchInput){
             };
             searchRes.push(songItem);
             console.log(songItem);
-
-          }
+          });
+          
           return searchRes;
-    }, function(err) {
+    } catch(err) {
           console.error(err);
-    });
+    }
 }
 
 

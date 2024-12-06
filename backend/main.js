@@ -97,6 +97,9 @@ app.post('/login', async(req, res) => { // Handling POST requests to '/login' en
 	}
 })
 
+app.get('/api/spotify-token', (req, res) => {
+    res.json({ token: process.env.SPOTIFY_ACCESS_TOKEN });
+});
 
 
 app.listen(PORT, () => { // Starting the server and listening on the specified port

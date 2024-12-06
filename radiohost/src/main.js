@@ -7,18 +7,25 @@ import axios from 'axios'
 import './styles/main.css'
 import Fade from 'react-reveal/Fade'
 import { FaSearch } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 
 export default function Main(){ // Defining a default function component called Main
     const[query, setQuery] = useState('') // Creating a state variable 'query' and a setter function 'setQuery' using the useState hook, initial value is an empty string
+    const navigate = useNavigate();
 
     const handlePrompt = async(e) => {
         e.preventDefault()
         try {
             console.log(query)
+            if (query.trim()) {
+                navigate(`/home/results?q=${encodeURIComponent(query)}`);
+            }
         } catch (error) {
             console.log(error)
         }
     }
+
+    
     return(
         <div className='main-page'>
             <Fade top>
