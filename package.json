@@ -1,0 +1,9 @@
+{
+  "devDependencies": {
+    "tailwindcss": "^3.4.16"
+  },
+  "dependencies": {
+    "react-spotify-web-playback": "^0.14.6",
+    "spotify-web-api-node": "^5.0.2"
+  }
+}

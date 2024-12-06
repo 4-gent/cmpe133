@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import axios from "axios";
+import React, { useState } from "react"
+import axios from "axios"
 import { NotificationManager, NotificationContainer } from 'react-notifications' // Importing NotificationManager and NotificationContainer from 'react-notifications'
 import 'react-notifications/lib/notifications.css'
 
@@ -47,13 +47,21 @@ export default function Registration() {
     }
 
     return (
-        <div className='register-page'>
-            <form onSubmit={handleRegister}>
-                <input type='email' placeholder='Email' onChange={(e) => setEmail(e.target.value)} />
-                <input type='text' placeholder='Username' onChange={(e) => setUsername(e.target.value)} />
-                <input type='password' placeholder='Password' onChange={(e) => setPassword(e.target.value)} />
-                <button type='submit'>Register</button>
-            </form>
+        <div className='entry-page'> {/* Rendering a div element with a class name 'login-page' */}
+            <a href='/' className='entry-nav'>{'<'}</a>
+            <div className='entry-form-container'>
+                <h4> Create an Account</h4>
+                <form className="entry-form" onSubmit={handleRegister}>
+                    <label>Email</label>
+                    <input type='email' onChange={(e) => setEmail(e.target.value)} />
+                    <label>Username</label>
+                    <input type='text' onChange={(e) => setUsername(e.target.value)} />
+                    <label>Password</label>
+                    <input type='password'  onChange={(e) => setPassword(e.target.value)} />
+                    <button className = "entry-submit" type='submit'>Register</button>
+                </form>    
+            </div>
+            
             <NotificationContainer />
         </div>
     )
