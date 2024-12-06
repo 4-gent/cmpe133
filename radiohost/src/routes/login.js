@@ -16,8 +16,11 @@ export default function Login() { // Defining a functional component called Logi
     we need to take what ever we typed in in the search bar and send the request to search
     right now the search method has a hard coded input
     */ 
+   
     const searchres = axios.get('http://localhost:4000/search/searchAll');
     //const playlistres = axios.get('http://localhost:4000/userPlaylists/UserPlaylists');
+    //const createPlaylist = axios.post('http://localhost:4000/userPlaylists/Create');
+    //const songToPlaylist = axios.put('http://localhost:4000/userPlaylists/AddSongToPlaylist');
 
     const handleLogin = async(e) => { // Defining an asynchronous function called handleLogin, which takes an event object as a parameter
         e.preventDefault() // Preventing the default form submission behavior
