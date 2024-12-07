@@ -20,7 +20,7 @@ router.get('/searchAll', async(req, res) =>{
 async function musicSearch(searchInput){
         try {
         const data = await spotifyApi.searchTracks(searchInput);
-          //console.log('Search results: ', data.body.tracks);
+          console.log('Search results: ', data.body.tracks);
           let resArray = data.body.tracks.items;
           let searchRes = [];
 
@@ -36,7 +36,7 @@ async function musicSearch(searchInput){
                 albumUri: song.album.uri
             };
             searchRes.push(songItem);
-            console.log(songItem);
+            // console.log(songItem);
           });
           
           return searchRes;

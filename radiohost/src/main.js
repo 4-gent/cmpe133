@@ -34,7 +34,7 @@ export default function Main(){ // Defining a default function component called 
                         <MainNav />
                     </nav>
                     <div className='main-header-internal'>
-                        <h1 className='main-title'>Radio Host</h1> {/*Displaying the heading "Radio Host"*/}
+                        <h1 className='main-title'>RadioHost</h1> {/*Displaying the heading "Radio Host"*/}
                         <p className='main-subtitle'>What would you like to listen to?</p>
                         <form className='input-container' onSubmit={handlePrompt}>
                             <input className='main-prompt' type='text' placeholder='Music like...' onChange={(e) => setQuery(e.target.value)} />

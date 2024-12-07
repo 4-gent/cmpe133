@@ -6,22 +6,25 @@ import SongCard from "../components/songcard.js"
 import { IoIosPlayCircle } from "react-icons/io"
 import { IoPlaySkipBackCircle, IoPlaySkipForwardCircle   } from "react-icons/io5"
 
-export default function MusicPlayer() {
+
+export default function MusicPlayer(props) {
     const [isExpanded, setIsExpanded] = useState(false);
+    const [player, setPlayer] = useState(undefined);
+    const [is_paused, setPaused] = useState(true);
+    const [is_active, setActive] = useState(false);
+    // const [current_track, setTrack] = useState(track)
 
     const toggleExpansion = () => {
         setIsExpanded(!isExpanded);
     };
 
-    const handleControlClick = (e) => { // don't expand when controls are clicked
+    const handleControlClick = (e) => { 
         e.stopPropagation(); 
     };
 
     const query = "twice";
     const [songs, setSongs] = useState([]);
 
-    // i used search query for now to render the songs in the player
-    // there's a get user playlist in the backend routes
     useEffect(() => { 
         if (query) {
             console.log("Query:", query);  
@@ -36,8 +39,11 @@ export default function MusicPlayer() {
         }
     }, [query]);
 
+
     return (
-        <div className = {`player-container ${isExpanded ? "expanded" : ""}`} onClick={toggleExpansion}>
+        <>
+            
+            <div className = {`player-container ${isExpanded ? "expanded" : ""}`} onClick={toggleExpansion}>
             <div className="upper-player"> 
                 <div className="cd-container">  
                     <img src ={albumart} className ="curr-img" />
@@ -48,32 +54,35 @@ export default function MusicPlayer() {
                 </div>
                 <div className="controls" onClick={handleControlClick} >
                     <button><IoPlaySkipBackCircle /></button>
-                    <button><IoIosPlayCircle /></button>
+                    <button>
+                        {is_paused ? <IoIosPlayCircle /> : " ||"}
+                        </button>
                     <button><IoPlaySkipForwardCircle /></button>
                 </div>
             
             </div>
             <div className="song-duration-bar" onClick={handleControlClick}>
                 <input type="range" className="seek-slider" max="100" value="0"/>
-
             </div>
-            
-            {isExpanded && (
-                <div className="queue" onClick={handleControlClick}>
-                    <h3>Playing From:</h3>
-                    <h3 style={{color: '#4F378B'}}> Your Playlist</h3>
-                    <div>
-                    {songs.length > 0 ? (
-                        songs.map((song) => <SongCard key={song.songId} song={song}   showAddButton={false} 
-                        showPlaylistButton={false} 
-                        />)
-                        ) : (
-                        <p>No songs found</p>
-                        )}
+                {isExpanded && (
+                    <div className="queue" onClick={handleControlClick}>
+                        <h3>Playing From:</h3>
+                        <h3 style={{color: '#4F378B'}}> Your Playlist</h3>
+                        <div>
+                        {songs.length > 0 ? (
+                            songs.map((song) => <SongCard key={song.songId} song={song}   
+                                showAddButton={false} 
+                                showAlbum={false}
+                            />)
+                            ) : (
+                            <p>No songs found</p>
+                            )}
+                        </div>
                     </div>
-                </div>
-            )}
-        </div>
+                )}
+            </div>
+        </>
+        
         
     );
     

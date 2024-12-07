@@ -20,10 +20,15 @@ const setTokens = (accessToken, refreshToken, expiresIn) => {
     
   spotifyApi.setAccessToken(accessToken);
   spotifyApi.setRefreshToken(refreshToken);
+  tokens.accessToken = accessToken;
+  tokens.refreshToken = refreshToken;
+  tokens.expiresAt = expiresIn;
   console.log('The access token expires in ' + expiresIn);
   console.log('The access token is ' + accessToken);
   console.log('The refresh token is' + refreshToken);
 };
+
+
 
 const setUser = (inputUser) =>{
   username = inputUser;
@@ -32,6 +37,10 @@ const setUser = (inputUser) =>{
 // Function to get authenticated spotify client
 const getSpotifyApi = () => spotifyApi;
 const getUsername = () => username;
+const getAccessToken = () => tokens.accessToken;
 
 
-module.exports = { setTokens, getSpotifyApi, getUsername, setUser };
+
+
+module.exports = { setTokens, getSpotifyApi, getUsername, setUser, getAccessToken};
+

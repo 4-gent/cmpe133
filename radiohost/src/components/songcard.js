@@ -2,8 +2,8 @@ import React from "react"
 import { MdOutlinePlaylistAdd, MdOutlineAddCircleOutline } from "react-icons/md"
 import "../styles/songcard.css"
 
-const SongCard = ({ song, showAddButton = true, showPlaylistButton = true }) => {
-    const areControlsVisible = showAddButton || showPlaylistButton;
+const SongCard = ({ song, showAddButton = true, showAlbum = true }) => {
+ 
 
   return (
     <div className="song-card">
@@ -19,16 +19,16 @@ const SongCard = ({ song, showAddButton = true, showPlaylistButton = true }) => 
             ))}
             </p>
         </div>
-        {areControlsVisible && (
+        {showAddButton && (
             <div className="song-actions">
-            {showAddButton && (
                 <button className="song-button"><MdOutlineAddCircleOutline /></button>
-            )}
-            {showPlaylistButton && (
-                <button className="song-button"><MdOutlinePlaylistAdd /></button>
-                )}
             </div>
-         )}
+        )}
+        {showAlbum && (
+            <div className="song-album"> 
+                <p className="song-album-text">{song.album}</p>
+            </div>
+        )}
     </div>
   );
 };
