@@ -21,8 +21,6 @@ export default function Library() {
         { title: "Playlist Name", description: "Description", image: null, id: "10" },
         { title: "Playlist Name", description: "Description", image: null, id: "11" },
         { title: "Playlist Name", description: "Description", image: null, id: "12" },
-        
-        
       ];
 
     const goToPlaylist = (id) => {

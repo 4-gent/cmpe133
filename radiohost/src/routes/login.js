@@ -17,6 +17,10 @@ export default function Login() { // Defining a functional component called Logi
     we need to take what ever we typed in in the search bar and send the request to search
     right now the search method has a hard coded input
     */ 
+
+
+
+    
     const searchres = axios.get('http://localhost:4000/search/searchAll');
     //const playlistres = axios.get('http://localhost:4000/userPlaylists/UserPlaylists');
 

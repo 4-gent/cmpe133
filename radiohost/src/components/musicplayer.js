@@ -2,9 +2,22 @@ import React, { useState, useEffect } from "react"
 import axios from "axios"
 import '../styles/musicplayer.css'
 import albumart from "../assets/musicplayerimg.png"
+import defaultimg from "../assets/defaultalbum.png"
 import SongCard from "../components/songcard.js"
 import { IoIosPlayCircle } from "react-icons/io"
 import { IoPlaySkipBackCircle, IoPlaySkipForwardCircle   } from "react-icons/io5"
+
+const track = {
+    name: "",
+    album: {
+        images: [
+            { url: "" }
+        ]
+    },
+    artists: [
+        { name: "" }
+    ]
+}
 
 
 export default function MusicPlayer(props) {
@@ -12,7 +25,7 @@ export default function MusicPlayer(props) {
     const [player, setPlayer] = useState(undefined);
     const [is_paused, setPaused] = useState(true);
     const [is_active, setActive] = useState(false);
-    // const [current_track, setTrack] = useState(track)
+    const [current_track, setTrack] = useState(track)
 
     const toggleExpansion = () => {
         setIsExpanded(!isExpanded);
@@ -39,48 +52,104 @@ export default function MusicPlayer(props) {
         }
     }, [query]);
 
+    
+    
+    useEffect(() => {
+        if (!window.Spotify) { 
+            const script = document.createElement("script");
+            script.src = "https://sdk.scdn.co/spotify-player.js";
+            script.async = true;
+            document.body.appendChild(script);
+        }
+    
+        let player;
+    
+        window.onSpotifyWebPlaybackSDKReady = () => {
+            if (player) {
+                console.log("Player already initialized");
+                return;
+            }
+            player = new window.Spotify.Player({
+                name: 'Web Playback SDK',
+                getOAuthToken: (cb) => cb(props.token),
+                volume: 0.5,
+            });
+            setPlayer(player);
+            player.addListener('ready', ({ device_id }) => {
+                console.log('Ready with Device ID', device_id);
+            });
+    
+            player.addListener('not_ready', ({ device_id }) => {
+                console.log('Device ID has gone offline', device_id);
+            });
+    
+            player.addListener('player_state_changed', (state) => {
+                if (!state) return;
+    
+                setTrack(state.track_window.current_track);
+                setPaused(state.paused);
+    
+                player.getCurrentState().then((state) => {
+                    setActive(!!state); 
+                });
+            });
+    
+            player.connect();
+        };
+    
+        return () => {
+            if (player) {
+                player.disconnect();
+                console.log("Player disconnected");
+            }
+        };
+    }, [props.token]);
+
 
     return (
         <>
+            {is_active && (
+            <div className = {`player-container ${isExpanded ? "expanded" : ""}`} onClick={toggleExpansion} >
             
-            <div className = {`player-container ${isExpanded ? "expanded" : ""}`} onClick={toggleExpansion}>
-            <div className="upper-player"> 
-                <div className="cd-container">  
-                    <img src ={albumart} className ="curr-img" />
-                </div>
-                <div className="curr-info">
-                    <h6 className="curr-title">X-Factor</h6>
-                    <p className="curr-artist">Ms. Lauryn Hill</p>
-                </div>
-                <div className="controls" onClick={handleControlClick} >
-                    <button><IoPlaySkipBackCircle /></button>
-                    <button>
-                        {is_paused ? <IoIosPlayCircle /> : " ||"}
-                        </button>
-                    <button><IoPlaySkipForwardCircle /></button>
-                </div>
-            
-            </div>
-            <div className="song-duration-bar" onClick={handleControlClick}>
-                <input type="range" className="seek-slider" max="100" value="0"/>
-            </div>
-                {isExpanded && (
-                    <div className="queue" onClick={handleControlClick}>
-                        <h3>Playing From:</h3>
-                        <h3 style={{color: '#4F378B'}}> Your Playlist</h3>
-                        <div>
-                        {songs.length > 0 ? (
-                            songs.map((song) => <SongCard key={song.songId} song={song}   
-                                showAddButton={false} 
-                                showAlbum={false}
-                            />)
-                            ) : (
-                            <p>No songs found</p>
-                            )}
+                
+                    <div className="upper-player" > 
+                        <div className="cd-container">  
+                            <img src ={is_active? current_track.album.images[2].url : defaultimg} className ="curr-img" />
                         </div>
+                        <div className="curr-info">
+                            <h6 className="curr-title"> {is_active? current_track.name : "" }</h6>
+                            <p className="curr-artist">{is_active? current_track.artists[0].name : "" }</p>
+                         </div>
+                        <div className="controls" onClick={handleControlClick} >
+                            <button ><IoPlaySkipBackCircle /></button>
+                             <button onClick={() => {player.togglePlay()}}>
+                                {is_paused ? <IoIosPlayCircle /> : " ||"}
+                            </button>
+                            <button><IoPlaySkipForwardCircle /></button>
+                        </div>   
                     </div>
-                )}
-            </div>
+                    <div className="song-duration-bar" onClick={handleControlClick}>
+                        <input type="range" className="seek-slider" max="100" value="0"/>
+                    </div>
+                        {isExpanded && (
+                             <div className="queue" onClick={handleControlClick}>
+                                <h3>Playing From:</h3>
+                                <h3 style={{color: '#4F378B'}}> Your Playlist</h3>
+                            <div>
+                                {songs.length > 0 ? (
+                                    songs.map((song) => <SongCard key={song.songId} song={song}   
+                                        showAddButton={false} 
+                                        showAlbum={false}
+                                    />)
+                                    ) : (
+                                        <p>No songs found</p>
+                                    )}
+                            </div>
+                            </div>
+                        )}
+               </div>
+            )}
+            
         </>
         
         

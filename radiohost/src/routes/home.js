@@ -20,11 +20,10 @@ export default function Home() {
               console.error("Error fetching access token:", error);
             }
           };
-    
-          
         getToken(); 
       }, []);
     
+      
     return (
         <div> 
             <header className="home-header">
