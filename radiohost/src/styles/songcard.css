@@ -2,7 +2,7 @@
 .song-card {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: flex-start;
     padding: 20px 20px;
     border-bottom: 1px solid #ddd;
     width: 100%;
@@ -21,13 +21,19 @@
 }
 
 .song-info {
-    flex-grow: 1; /* Allow it to expand */
-    
-    width: 12%;
+    width: 275px;
     margin: 0px 20px;
     display: flex;
     flex-direction: column;
     overflow: hidden;
+}
+
+.song-album {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    margin-left: 130px;
+    
 }
 
 .song-title {
@@ -51,7 +57,6 @@
 }
 
 .song-actions {
-    flex-grow: 15;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -70,3 +75,4 @@ button:hover{
     transition: 200ms;
     color: black;
 }
+

@@ -39,12 +39,14 @@ export default function Results() {
             <div className="song-content">
             <h5> Songs </h5> 
             {songs.length > 0 ? (
-                songs.map((song) => <SongCard key={song.songId} song={song} />)
+                songs.map((song) => <SongCard key={song.songId} song={song} showAlbum={false}/>)
                 ) : (
                 <p>No songs found</p>
                 )}
             </div>
         </div>
+
+        
     )
 }
 

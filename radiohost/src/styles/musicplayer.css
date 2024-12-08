@@ -20,7 +20,7 @@
 
 
 .player-container.expanded {
-    height: 400px; 
+    height: 500px; 
     transition: height 0.3s ease; 
     overflow-y: auto;
 }
@@ -76,8 +76,9 @@
 .controls {
     flex-grow: 2;
     display: flex;
-    align-items: center;
+    height: 100%;
     justify-content: center;
+    align-items: center;
     gap: 20px;
     margin-right: 20px;
 }
@@ -87,6 +88,9 @@
     background-color: transparent;
     font-size: 2.5rem;
     color: #666;
+    display: flex;
+    align-items: center;     
+    justify-content: center; 
     padding: 0;
 }
 
@@ -110,7 +114,6 @@
     background: #ddd;
     border-radius: 5px;
     outline: none;
-    cursor: pointer;
     transition: background-color 0.2s;
 }
 

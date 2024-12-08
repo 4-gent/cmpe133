@@ -30,7 +30,6 @@ app.use('/spotifyAuth', authRoute);
 app.use('/search', searchRoute);
 app.use('/userPlaylists', userPlaylistsRoute);
 
-
 const PORT = process.env.PORT // Getting the port number from environment variables-
 // MongoDB Atlas Connection
 const uri = process.env.ATLAS_URI // Getting the MongoDB connection URI from environment variables

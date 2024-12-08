@@ -14,8 +14,8 @@
     align-items: flex-end;
     gap: 15px;
     padding-bottom: 20px;
-    
 }
+
 .search-display h3 {
     margin: 0px;
 }
@@ -28,7 +28,14 @@
 }
 
 .song-content {
-    height:80vh;
+    height:70vh;
     overflow-y:auto;
     background:#fff;
+}
+
+.create-button {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    
 }

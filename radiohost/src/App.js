@@ -7,8 +7,10 @@ import Registration from './routes/register'
 import Home from './routes/home'
 import Results from './routes/results'
 import Library from './routes/library'
+import Playlist from './routes/playlist'
 
 function App() {
+
   return (
     // Router component to enable routing in the application
     <Router>
@@ -20,6 +22,7 @@ function App() {
         <Route path="/home" element={<Home />}>
           <Route path="results" element={<Results />} />
           <Route path="library" element={<Library />} />
+          <Route path="playlist/:id" element={<Playlist />} />
         </Route>
       </Routes>
     </Router>

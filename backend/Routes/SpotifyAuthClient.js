@@ -36,9 +36,7 @@ router.get('/auth', async(req, res) => {
 router.get('/fetchTokens', async(req, res) => {
 	try{
 
-		
 		await generateToken(req.query.code);
-
 
 		res.redirect('http://localhost:3000');
 
@@ -69,6 +67,7 @@ async function generateToken(Acode){
         console.log("Error occured: ", err);
     }
 }
+
 async function GetAuthUser() {
 	spotifyApi.getMe().then(function(data) {
 		//console.log('Some information about the authenticated user', data.body);
@@ -78,6 +77,18 @@ async function GetAuthUser() {
 		console.log('Something went wrong!', err);
 	});
   }
+
+router.get('/getAccessToken', (req, res) => {
+	try {
+	  	const accessToken = SpotifyTokenRoute.getAccessToken();
+	  	console.log(accessToken)
+		res.json({ accessToken });
+	  
+	} catch (error) {
+	  	console.error('Error fetching access token:', error);
+	  	res.status(500).json({ message: "Error fetching access token" });
+	}
+});
 
 module.exports = router;
 
