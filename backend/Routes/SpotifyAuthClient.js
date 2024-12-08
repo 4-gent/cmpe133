@@ -14,7 +14,7 @@ const spotifyApi = SpotifyTokenRoute.getSpotifyApi();
 router.get('/auth', async(req, res) => {
 	try{
 		let scopes = ['user-library-read', 'user-top-read', 'streaming', 'playlist-read-collaborative', 
-			'user-follow-read', 'playlist-modify-public'
+			'user-follow-read', 'playlist-modify-public', 'playlist-modify-private'
 		];
 
 		// Setting credentials
