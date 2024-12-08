@@ -3,7 +3,7 @@ import axios from "axios"
 import '../styles/home.css'
 import { IoMdMusicalNote, IoMdBookmark } from "react-icons/io"
 import MusicPlayer from "../components/musicplayer"
-import { Outlet } from 'react-router-dom'
+import { Link, Outlet } from 'react-router-dom'
 
 
 export default function Home() {
@@ -23,13 +23,13 @@ export default function Home() {
         getToken(); 
       }, []);
     
-      
+
     return (
         <div> 
             <header className="home-header">
                 <div className="nav-left">
-                    <a href="/home/results" class="nav-item"><IoMdMusicalNote /></a> 
-                    <a href="/home/library" class="nav-item"><IoMdBookmark /></a>
+                    <Link to="/home/results" class="nav-item"><IoMdMusicalNote /></Link> 
+                    <Link to="/home/library" class="nav-item"><IoMdBookmark /></Link>
                 </div>
                 <MusicPlayer token={token}/>
             </header>

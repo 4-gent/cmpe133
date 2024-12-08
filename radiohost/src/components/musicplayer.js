@@ -5,7 +5,7 @@ import albumart from "../assets/musicplayerimg.png"
 import defaultimg from "../assets/defaultalbum.png"
 import SongCard from "../components/songcard.js"
 import { IoIosPlayCircle } from "react-icons/io"
-import { IoPlaySkipBackCircle, IoPlaySkipForwardCircle   } from "react-icons/io5"
+import { IoPlaySkipBackCircle, IoPlaySkipForwardCircle, IoPauseCircle  } from "react-icons/io5"
 
 const track = {
     name: "",
@@ -19,13 +19,13 @@ const track = {
     ]
 }
 
-
 export default function MusicPlayer(props) {
     const [isExpanded, setIsExpanded] = useState(false);
     const [player, setPlayer] = useState(undefined);
     const [is_paused, setPaused] = useState(true);
     const [is_active, setActive] = useState(false);
-    const [current_track, setTrack] = useState(track)
+    const [current_track, setTrack] = useState(track);
+    const [deviceId, setDeviceId] = useState(null);
 
     const toggleExpansion = () => {
         setIsExpanded(!isExpanded);
@@ -53,7 +53,6 @@ export default function MusicPlayer(props) {
     }, [query]);
 
     
-    
     useEffect(() => {
         if (!window.Spotify) { 
             const script = document.createElement("script");
@@ -77,6 +76,7 @@ export default function MusicPlayer(props) {
             setPlayer(player);
             player.addListener('ready', ({ device_id }) => {
                 console.log('Ready with Device ID', device_id);
+                setDeviceId(device_id);
             });
     
             player.addListener('not_ready', ({ device_id }) => {
@@ -93,19 +93,50 @@ export default function MusicPlayer(props) {
                     setActive(!!state); 
                 });
             });
-    
+            
             player.connect();
+            player.setName("RadioHost")
         };
     
         return () => {
             if (player) {
                 player.disconnect();
-                console.log("Player disconnected");
             }
         };
     }, [props.token]);
 
+    const playTrack = (trackUri) => {
+        console.log("URI: ", trackUri)
+        if (!deviceId) {
+            console.error("Device ID is not set yet.");
+            return;
+        }
+    
+        const headers = {
+            "Authorization": `Bearer ${props.token}`,
+            "Content-Type": "application/json",
+        };
+    
+        const body = {
+            uris: [trackUri], // URI of the track to play
+        };
+    
+        fetch(`https://api.spotify.com/v1/me/player/play?device_id=${deviceId}`, {
+            method: "PUT",
+            body: JSON.stringify(body),
+            headers,
+        })
+            .then(response => {
+                if (response.ok) {
+                    console.log("Playback started");
+                } else {
+                    console.error("Error starting playback:", response);
+                }
+            })
+            .catch(err => console.error("Error:", err));
+    };
 
+    
     return (
         <>
             {is_active && (
@@ -123,7 +154,7 @@ export default function MusicPlayer(props) {
                         <div className="controls" onClick={handleControlClick} >
                             <button ><IoPlaySkipBackCircle /></button>
                              <button onClick={() => {player.togglePlay()}}>
-                                {is_paused ? <IoIosPlayCircle /> : " ||"}
+                                {is_paused ? <IoIosPlayCircle /> : <IoPauseCircle />}
                             </button>
                             <button><IoPlaySkipForwardCircle /></button>
                         </div>   
@@ -140,6 +171,7 @@ export default function MusicPlayer(props) {
                                     songs.map((song) => <SongCard key={song.songId} song={song}   
                                         showAddButton={false} 
                                         showAlbum={false}
+                                        onClick={() => playTrack(song.songUri)}
                                     />)
                                     ) : (
                                         <p>No songs found</p>

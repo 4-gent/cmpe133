@@ -5,6 +5,7 @@ import { IoIosArrowBack } from "react-icons/io";
 import { IoIosPlayCircle } from "react-icons/io"
 import SongCard from "../components/songcard.js"
 import axios from "axios"
+import { Link } from "react-router-dom"
 
 
 export default function Playlist(){
@@ -14,7 +15,6 @@ export default function Playlist(){
     const [songs, setSongs] = useState([]);
 
     // i used search query for now to render the songs in the player
-    // there's a get user playlist in the backend routes
     useEffect(() => { 
         if (query) {
             console.log("Query:", query);  
@@ -32,7 +32,7 @@ export default function Playlist(){
 
     return (
         <div className="playlist-page">
-            <a href='/home/library' className='playlist-nav'><IoIosArrowBack /></a>
+            <Link to='/home/library' className='playlist-nav'><IoIosArrowBack /></Link>
             <div className="playlist-container" >
                 <div className="playlist-header">
                     <img className="playlist-art"></img>
