@@ -18,7 +18,7 @@ export default function Login() { // Defining a functional component called Logi
     right now the search method has a hard coded input
     */ 
 
-    const searchres = axios.get('http://localhost:4000/search/searchAll');
+    // const searchres = axios.get('http://localhost:4000/search/searchAll');
     //const playlistres = axios.get('http://localhost:4000/userPlaylists/UserPlaylists');
     //const createPlaylist = axios.post('http://localhost:4000/userPlaylists/Create');
     //const songToPlaylist = axios.put('http://localhost:4000/userPlaylists/AddSongToPlaylist');
@@ -27,12 +27,26 @@ export default function Login() { // Defining a functional component called Logi
         e.preventDefault() // Preventing the default form submission behavior
 
         try {
-            const response = await axios.post('http://localhost:4000/login', { // Sending a POST request to 'http://localhost:4000/login' endpoint
-                email, // Including the 'email' value in the request body
-                password // Including the 'password' value in the request body
-            })
-            if (response.status === 200){
-                console.log(response) // Logging the response data to the console
+            if(email === '' || password === '') // Checking if the email or password is empty
+                NotificationManager.error('Please fill in all fields', 'Error', 2000) // Displaying an error notification
+            else{
+                const response = await axios.post('http://localhost:4000/login', { // Sending a POST request to 'http://localhost:4000/login' endpoint
+                    email, // Including the 'email' value in the request body
+                    password // Including the 'password' value in the request body
+                , withCredentials: true}) // Setting withCredentials to true to include cookies in the request
+                if(response.status === 401) { // Checking if the response status is 401 (Unauthorized)
+                    console.log(response) // Logging the response data to the console
+                    NotificationManager.error('Invalid email or password', 'Error', 2000) // Displaying an error notification
+                }
+                else if(response.status === 400)
+                    NotificationManager.info(response.data, 'Error', 2000)
+                else{
+                    console.log(response) // Logging the response data to the console
+                    NotificationManager.success('You are logged in!', 'Success', 2000) // Displaying a success notification
+                    setTimeout(() => {
+                        window.location.href = 'http://localhost:4000/SpotifyAuth/auth';
+                    }, 1500)
+                }
             }
         } catch (error) {
             console.log(error) // Logging any error that occurs during the request to the console

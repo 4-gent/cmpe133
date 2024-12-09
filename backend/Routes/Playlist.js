@@ -1,12 +1,26 @@
 const express = require('express');
 const router = express.Router();
-const axios = require('axios');
+const cors = require('cors') // Importing the CORS middleware
+const MongoClient = require('mongodb').MongoClient // Importing the MongoDB client
+
+// MongoDB Atlas Connection
+const uri = process.env.ATLAS_URI // Getting the MongoDB connection URI from environment variables
+const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true }) // Creating a new MongoDB client
+
+const dbName = process.env.DATABASE_NAME // Getting the database name from environment variables
+const playlist = process.env.PLAYLIST_COLLECTION // Getting the collection name from environment variables
 
 // dont need routes/spotify... since its in same directory
 const SpotifyTokenRoute = require('./SpotifyTokens.js');
 //need user id to create their playlist
 
 const spotifyApi = SpotifyTokenRoute.getSpotifyApi();
+
+const corsEnable = {
+	origin: 'http://localhost:3000',
+	credentials: true,
+}
+router.use(cors(corsEnable)) // Enabling CORS for all routes
 
 router.get('/UserPlaylists', async(req, res) => {
 	try{
@@ -19,14 +33,39 @@ router.get('/UserPlaylists', async(req, res) => {
 	}
 })
 
-router.post('/Create', async(req, res) => {
+router.post('/create', async(req, res) => {
 	try{
-    //hard coded playlist name
-		await CreatePlaylist('radiohost');
+    /*
+    * You want to make a new playlist in the db
+    * then when you want to play music, you get song info into the db then play it
+    */
+    const {title, description} = req.body;
+
+    if (!title || !description) {
+      return res.status(400).send('Title and description are required');
+    }
+    await client.connect();
+    const database = client.db(dbName);
+    const collection = database.collection(playlist);
+
+    const userEmail = req.session.email;
+
+    const newPlaylist = {
+      title: title,
+      description: description,
+      userEmail: userEmail,
+      songs: [],
+      createdAt: new Date()
+    }
+
+    await collection.insertOne(newPlaylist);
+
+    res.status(200).send('Playlist created');
+
 	} catch (error) {
 		console.log(error) // Logging any errors that occur during the registration process
 	} finally {
-		
+		await client.close();
 	}
 })
 
@@ -58,7 +97,7 @@ async function GetMyPlaylists() {
       I also coded it to just return the latest playlist id the user interacted with
     */
 
-    console.log('Retrieved playlists', data.body.items);
+    // console.log('Retrieved playlists', data.body.items);
     return data.body.items;
   },function(err) {
     console.log('Something went wrong!', err);

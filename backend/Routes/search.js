@@ -1,10 +1,15 @@
 const express = require('express') // Importing the Express framework
 const SpotifyTokenRoute = require('./SpotifyTokens.js');
 const router = express.Router();
-
+const cors = require('cors') // Importing the CORS middleware
 
 const spotifyApi = SpotifyTokenRoute.getSpotifyApi();
 
+const corsEnable = {
+	origin: 'http://localhost:3000',
+	credentials: true,
+}
+router.use(cors(corsEnable)) // Enabling CORS for all routes
 
 router.get('/searchAll', async(req, res) =>{
     
@@ -20,7 +25,7 @@ router.get('/searchAll', async(req, res) =>{
 async function musicSearch(searchInput){
         try {
         const data = await spotifyApi.searchTracks(searchInput);
-          console.log('Search results: ', data.body.tracks);
+        //   console.log('Search results: ', data.body.tracks);
           let resArray = data.body.tracks.items;
           let searchRes = [];
 
