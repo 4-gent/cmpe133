@@ -7,12 +7,6 @@ export default function Registration() {
     const [email, setEmail] = useState('');
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
-    
-    /*testing spotify
-    i coded it so that when you go to the registration page, it authenticates the user
-    we need to do this first then we can access all of spotify api's features.
-    */
-    window.location.href = 'http://localhost:4000/SpotifyAuth/auth';
 
     const handleRegister = async(e) => {
         e.preventDefault();
@@ -24,10 +18,10 @@ export default function Registration() {
             };
             console.log(data);
             const response = await axios.post('http://localhost:4000/register', data, { withCredentials: true });
-            if (response.status === 200) {
+            if (response.status === 201) {
                 console.log(response);
+                NotificationManager.success('You are registered!', 'Success', 2000);
                 setTimeout(() => {
-                    NotificationManager.success('You are registered!', 'Success', 2000);
                     window.location.href = '/login';
                 }, 2000);
             }

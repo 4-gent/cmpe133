@@ -2,11 +2,16 @@
 const express = require('express');
 const router = express.Router();
 const axios = require('axios');
+const cors = require('cors') // Importing the CORS middleware
 
 // dont need routes/spotify... since its in same directory
 const SpotifyTokenRoute = require('./SpotifyTokens.js');
 
-
+const corsEnable = {
+	origin: 'http://localhost:3000',
+	credentials: true,
+}
+router.use(cors(corsEnable)) // Enabling CORS for all routes
 
 const spotifyApi = SpotifyTokenRoute.getSpotifyApi();
 
@@ -38,7 +43,7 @@ router.get('/fetchTokens', async(req, res) => {
 
 		await generateToken(req.query.code);
 
-		res.redirect('http://localhost:3000');
+		res.redirect('http://localhost:3000/home');
 
 	} catch (error) {
 		console.log(error) // Logging any errors that occur during the registration process
@@ -81,7 +86,6 @@ async function GetAuthUser() {
 router.get('/getAccessToken', (req, res) => {
 	try {
 	  	const accessToken = SpotifyTokenRoute.getAccessToken();
-	  	console.log(accessToken)
 		res.json({ accessToken });
 	  
 	} catch (error) {

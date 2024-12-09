@@ -7,6 +7,7 @@ const myCredentials = {
 	redirectUri: process.env.SPOTIFY_REDIRECT_URI
 };
 
+
 const spotifyApi = new SpotifyWebApi(myCredentials);
 let username = null;
 
