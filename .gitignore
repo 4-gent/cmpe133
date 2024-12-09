@@ -1,0 +1,58 @@
+# Byte-compiled / Python-specific
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.log
+*.sqlite3
+
+# Virtual environment
+venv/
+env/
+*.env
+
+# Flask specific
+instance/
+*.db
+*.sqlite3
+app-instance/
+
+# MacOS
+.DS_Store
+
+# Node.js / Frontend specific
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Build outputs
+dist/
+build/
+out/
+coverage/
+*.map
+
+# Logs and temp files
+*.log
+*.tmp
+*.swp
+*.swo
+*.bak
+
+# System files
+Thumbs.db
+desktop.ini
+
+# IDEs and editors
+.vscode/
+.idea/
+*.sublime-workspace
+*.sublime-project
+*.iml
+
+# Deployment-specific
+*.pem
+*.key
+.env.*
+.envrc
