@@ -46,7 +46,6 @@ export default function Library() {
     const handleCreatePlaylist = async(e) => {
         e.preventDefault();
         try{
-            setShowModal(false);
             const newPlaylist = {
                 title: title,
                 description: description
@@ -56,6 +55,7 @@ export default function Library() {
 
             if (response.status === 200) {
                 console.log(response);
+                setShowModal(false);
                 navigate(`/home/playlist/${response.data.id}`);
             }
 
@@ -92,7 +92,7 @@ export default function Library() {
             {showModal && (
                 <div className="modal">
                     <div className="modal-content">
-                        <div className="d-flex justify-content-around flex-row flex-wrap">
+                        <div className="d-flex flex-row justify-content-around">
                             <h3>New Playlist</h3>
                             <button className="close-modal" onClick={() => setShowModal(false)}>X</button>
                         </div>
