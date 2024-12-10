@@ -65,19 +65,46 @@ router.post('/create', async(req, res) => {
 	}
 })
 
-router.post('/get-playlist', async(req, res) => {
+router.get('/get-playlist/:id', async(req, res) => {
   let client;
   try{
+    const { db, playlist } = await connectToDatabase(); // Connecting to the MongoDB server
     const collection = db.collection(playlist); // Getting the collection instance
 
     const userEmail = req.session.user.email;
 
-    const {title} = req.body;
-
-    const playlist = await collection.findOne({email: userEmail, title: title});
-
-    res.status(200).send(playlist);
+    const result = await collection.findOne({email: userEmail, _id: new ObjectId(req.params.id)});
+  
+    if(result)
+      res.status(200).send(result);
+    else
+      console.log("playlist not found")
   } catch (error) {
+    console.log(error) // Logging any errors that occur during the registration process
+  } finally {
+    if(client)
+      await client.close();
+  }
+})
+
+router.get('/get-songs/:id', async(req, res) => {
+  let client;
+  try{
+    const { db, playlist } = await connectToDatabase(); // Connecting to the MongoDB server
+    const collection= db.collection(playlist); // Getting the collection instance
+  
+    const userEmail = req.session.user.email;
+
+    const result = await collection.findOne({email: userEmail, _id: new ObjectId(req.params.id)});
+
+    console.log("songs: ", result.songs);
+    
+    if (result) {
+      res.status(200).send(result.songs);
+    } else {
+      res.status(404).send('Playlist not found');
+    }
+  } catch (error){
     console.log(error) // Logging any errors that occur during the registration process
   } finally {
     if(client)

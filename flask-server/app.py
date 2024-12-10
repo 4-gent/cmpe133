@@ -19,7 +19,7 @@ CORS(app, supports_credentials=True)
 # Initialize tools and agent
 spotify_tool = SpotifyTool(os.getenv("SPOTIFY_CLIENT_ID"), os.getenv("SPOTIFY_CLIENT_SECRET"))
 duckduckgo_tool = DuckDuckGoSearchResults()
-model = ChatOpenAI(model="gpt-4o", api_key=os.getenv("OPENAIAPI_KEY"))
+model = ChatOpenAI(model="gpt-4o")
 tools = [
     Tool(name="Spotify Search", func=spotify_tool.search_music, description="Useful for searching music"),
     Tool(name="DuckDuckGo Search", func=duckduckgo_tool.invoke, description="Useful for searching the web"),
