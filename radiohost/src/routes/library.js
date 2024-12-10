@@ -4,34 +4,22 @@ import albumart from "../assets/musicplayerimg.png"
 import defaultimg from "../assets/defaultalbum.png"
 import { useNavigate } from "react-router-dom"
 import axios from "axios"
+import { NotificationManager, NotificationContainer } from 'react-notifications' // Importing NotificationManager and NotificationContainer from 'react-notifications'
+import 'react-notifications/lib/notifications.css'
 
 export default function Library() {
     const [showModal, setShowModal] = useState(false);
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
-
+    const [playlists, setPlaylists] = useState([]);
     const navigate = useNavigate();
-
-    const playlists = [
-        { title: "Hip Hop", description: "Rappers Delight", image: null, id: "1"},
-        { title: "Playlist Name", description: "Description", image: null, id: "2" },
-        { title: "Playlist Name", description: "Description", image: null, id: "3" },
-        { title: "Playlist Name", description: "Description", image: null, id: "4" },
-        { title: "Playlist Name", description: "Description", image: null, id: "5" },
-        { title: "Playlist Name", description: "Description", image: null, id: "6" },
-        { title: "Playlist Name", description: "Description", image: null, id: "7" },
-        { title: "Playlist Name", description: "Description", image: null, id: "8" },
-        { title: "Playlist Name", description: "Description", image: null, id: "9" },
-        { title: "Playlist Name", description: "Description", image: null, id: "10" },
-        { title: "Playlist Name", description: "Description", image: null, id: "11" },
-        { title: "Playlist Name", description: "Description", image: null, id: "12" },
-      ];
 
     useEffect(() => {
         async function fetchData() {
             try {
                 const response = await axios.get('http://localhost:4000/playlists/getAll', { withCredentials: true });
                 console.log("Playlists:", response.data);
+                setPlaylists(response.data);
             } catch (error) {
                 console.error("Error fetching playlists: ", error);
             }
@@ -51,16 +39,27 @@ export default function Library() {
                 description: description
             }
 
-            const response = await axios.post('http://localhost:4000/playlists/create', newPlaylist, { withCredentials: true });
+            console.log("New Playlist: ", newPlaylist);
 
+            const response = await axios.post('http://localhost:4000/playlists/create', newPlaylist, { withCredentials: true });
             if (response.status === 200) {
                 console.log(response);
                 setShowModal(false);
-                navigate(`/home/playlist/${response.data.id}`);
+                // navigate(`/home/playlist/${response.data.id}`);
+                window.location.reload();
             }
-
         } catch (error){
-            console.error("Error creating playlist: ", error);
+            if (error.response) {
+                if (error.response.status === 401) { // Checking if the response status is 400 (Bad Request)
+                    NotificationManager.error(error.response.data, 'Error', 2000); // Displaying an error notification
+                } else if (error.response.status === 400) { // Checking if the response status is 401 (Unauthorized)
+                    NotificationManager.error(error.response.data, 'Error', 2000); // Displaying an error notification
+                } else {
+                    NotificationManager.error(error.response.data, 'Error', 2000); // Displaying a generic error notification
+                }
+            } else {
+                NotificationManager.error(error.response.data, 'Error', 2000); // Displaying a generic error notification
+            }
         }
     }
 
@@ -71,8 +70,8 @@ export default function Library() {
                 <div className="library-grid">
                 {playlists.map((playlist, index) => (
                     <div className="library-card" 
-                        key={playlist.id}
-                        onClick={() => goToPlaylist(playlist.id)} 
+                        key={playlist._id}
+                        onClick={() => goToPlaylist(playlist._id)} 
                     >
                         {playlist.image ? (
                         <img src={playlist.image} alt={playlist.title} className="card-image" /> 
@@ -84,8 +83,8 @@ export default function Library() {
                             <p className="card-description">{playlist.description}</p>
                         </div>
                     </div>
-                    ))}
-                    
+                ))}
+                {!playlists.length && <p>Loading...</p>}
                 </div>
             </div>
             <button className="create-playlist" onClick={() => setShowModal(true)}>+ Create</button>
@@ -97,14 +96,14 @@ export default function Library() {
                             <button className="close-modal" onClick={() => setShowModal(false)}>X</button>
                         </div>
                         <form className="create-form" onSubmit={handleCreatePlaylist}> 
-                            <input type='text' value={title} onChange={(e) => setTitle(e.target.value)} /> 
-                            <input type='text' value={description} onChange={(e) => setDescription(e.target.value)} /> 
+                            <input type='text' value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Title" required /> 
+                            <input type='text' value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Description" required /> 
                             <button className="create-button" type='submit'>Create</button> 
                         </form>
                     </div>
                 </div>
             )}
+            <NotificationContainer />
         </div>
-        
     )
 }

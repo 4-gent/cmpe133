@@ -28,7 +28,7 @@ app.use(sessionMiddleware) // Using the Session middleware
 // Spotify Routes
 app.use('/spotifyAuth', spotifyAuth);
 app.use('/search', searchRoute);
-app.use('/userPlaylists', userPlaylistsRoute);
+app.use('/playlists', userPlaylistsRoute);
 
 // User Based Routes
 app.use('/auth', authRoute);

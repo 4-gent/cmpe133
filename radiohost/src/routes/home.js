@@ -3,12 +3,14 @@ import axios from "axios"
 import '../styles/home.css'
 import { IoMdMusicalNote, IoMdBookmark } from "react-icons/io"
 import MusicPlayer from "../components/musicplayer"
-import { Link, Outlet } from 'react-router-dom'
+import { Link, Outlet, useLocation } from 'react-router-dom'
 
 
 export default function Home() {
     const [token, setToken] = useState('');
     const [user, setUser] = useState(null);
+    const [query, setQuery] = useState('');
+    const location = useLocation();
 
     useEffect(() => {
       async function fetchData() {
@@ -32,6 +34,15 @@ export default function Home() {
       fetchData();
     }, []); // Empty dependency array ensures this runs only once when the component mount
 
+    const handleQuery = (e) => {
+      e.preventDefault();
+      try{
+        axios.post('http://localhost:5002/query', { query: query }, { withCredentials: true })
+      } catch (err){
+        console.error("Error fetching songs: ", err);
+      }
+    }
+
     return (
         <div> 
             <header className="home-header">
@@ -43,14 +54,17 @@ export default function Home() {
             </header>
             <div> 
                 <Outlet/>
-                {user ? (
+                {user && location.pathname === '/home' && (
                   <div>
                     <h1>Welcome, {user.username}</h1>
                     <p>Email: {user.email}</p>
+                    <form onSubmit={handleQuery}>
+                      <input className="query-input" placeholder="Search...." onChange={(e) => setQuery(e.target.value)} />
+                      <button type="submit">Search</button>
+                    </form>
                   </div>
-                ) : (
-                  <p>Loading...</p>
                 )}
+                {!user && <p>Loading...</p>}
             </div>
         </div>
     )

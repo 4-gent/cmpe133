@@ -1,5 +1,5 @@
 import React, { useState, useEffect }  from "react"
-import { useParams } from "react-router-dom";  // To fetch params from the URL
+import { useParams, useHistory } from "react-router-dom";  // To fetch params from the URL
 import "../styles/playlist.css"
 import { IoIosArrowBack } from "react-icons/io";
 import { IoIosPlayCircle } from "react-icons/io"
@@ -29,6 +29,28 @@ export default function Playlist(){
         }
     }, [query]);
 
+    useEffect(() => {
+        async function fetchData() {
+            try {
+                const response = await axios.get(`http://localhost:4000/playlists/get-playlist/${id}`, { withCredentials: true });
+                console.log("Songs:", response.data);
+                setSongs(response.data);
+            } catch (error) {
+                console.error("Error fetching songs: ", error);
+            }
+        };
+        fetchData();
+    })
+
+    const handleDeletePlaylist = async(e) => {
+        e.preventDefault();
+        try{
+            await axios.delete(`http://localhost:4000/playlists/delete/${id}`, { withCredentials: true });
+            window.location.href = '/home/library';
+        } catch(err){
+            console.error("Error deleting playlist: ", err);
+        }
+    }
 
     return (
         <div className="playlist-page">
@@ -57,6 +79,9 @@ export default function Playlist(){
                     <p>No songs found</p>
                     )}
                 </div>
+                <form className="delete-playlist" onSubmit={handleDeletePlaylist}>
+                    <button type="submit" className="delete-button">Delete Playlist</button>
+                </form>
             </div>
         </div>
     );
