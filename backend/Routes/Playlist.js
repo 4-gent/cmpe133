@@ -13,7 +13,7 @@ const spotifyApi = SpotifyTokenRoute.getSpotifyApi();
 router.get('/getAll', async(req, res) => {
   let client;
 	try{
-    const { client, db, playlist } = await connectToDatabase(); // Connecting to the MongoDB server
+    const { db, playlist } = await connectToDatabase(); // Connecting to the MongoDB server
     const collection = db.collection(playlist); // Getting the collection instance
 
     const userEmail = req.session.user.email;
@@ -73,10 +73,23 @@ router.get('/get-playlist/:id', async(req, res) => {
 
     const userEmail = req.session.user.email;
 
+    console.log(req.params.id)
+
     const result = await collection.findOne({email: userEmail, _id: new ObjectId(req.params.id)});
   
-    if(result)
-      res.status(200).send(result);
+    if(result){
+      req.session.playlist = { playlistId: req.params.id }; // Saving the user email in the session
+      console.log("Session info /playlist/get-playlist: ", req.session.playlist);
+      req.session.save((err) => {
+        if (err) {
+          console.error('Session save error:', err);
+          return res.status(500).send('Session save error');
+        } else {
+          console.log("playlist found")
+          return res.status(200).send(result);
+        }
+      });
+    }
     else
       console.log("playlist not found")
   } catch (error) {
@@ -133,23 +146,101 @@ router.delete('/delete/:id', async(req, res) => {
   }
 })
 
-router.put('/AddSongToPlaylist', async(req, res) => {
-  /* hard coded some songs CHANGE WHEN YOU GET THE SONGS FROM FRONTEND
-      when you save a song, we should also send the playlist id as well
-  */
-  let songsToAdd = ["spotify:track:4iV5W9uYEdYUVa79Axb7Rh", "spotify:track:1301WleyT98MSxVHPZCA6M"];
-  /*this variable should be assigned the playlist ID from the frontend instead of 
-    'await GetMyPlaylists()' when we click what playlist to add our song to.
+// Add a song to a playlist
+router.put('/addSong', async (req, res) => {
+  let client;
+  try {
+    const { playlistId, item } = req.body;
+    const userEmail = req.session.user.email;
 
-  */
-  
-  // I HARD CODED A MY PLAYLIST ID HERE FOR TESTING
-  //DELETE WHEN YOU IMPLEMENT FETCHING PLAYLIS ID FROM THE FRONTEND
-  let playlistId = '';
-  
-  await AddToPlaylist(playlistId, songsToAdd);
-	
-})
+    if (!playlistId || !item) {
+      return res.status(400).send('Playlist ID and item are required');
+    }
+
+    const { db, playlist } = await connectToDatabase(); // Connecting to the MongoDB server
+    const collection = db.collection(playlist); // Getting the collection instance
+
+    console.log("playlistId: ", playlistId);
+    console.log("item: ", item);
+
+    // Find the playlist by playlistId and userEmail
+    const result = await collection.findOne({ _id: new ObjectId(playlistId), email: userEmail });
+
+    if (!result) {
+      console.log("playlist not found ", result);
+      return res.status(404).send('Playlist not found');
+    }
+
+    // Check if the song is already in the songs array based on songlink
+    const songExists = result.songs.some(song => song.songlink === item.songlink);
+
+    if (!songExists) {
+      result.songs.push(item);
+    }
+
+    // Update the playlist in the database
+    await collection.updateOne(
+      { _id: new ObjectId(playlistId), email: userEmail },
+      { $set: { songs: result.songs } }
+    );
+
+    res.status(200).send('Song added to playlist');
+  } catch (error) {
+    console.log(error); // Logging any errors that occur during the process
+    res.status(500).send('Error adding song to playlist');
+  } finally {
+    if (client) {
+      await client.close();
+    }
+  }
+});
+
+// Delete a song from a playlist
+router.delete('/delete-song/', async (req, res) => {
+  let client;
+  try {
+    const { playlistId } = req.session.playlist;
+    const { songlink } = req.body;
+    const userEmail = req.session.user.email;
+
+    console.log("playlistId: ", playlistId);
+    console.log("songlink: ", songlink);
+    console.log("userEmail: ", userEmail);
+
+    if (!playlistId || !songlink) {
+      return res.status(400).send('Playlist ID and Song link are required');
+    }
+
+    const { db, playlist } = await connectToDatabase(); // Connecting to the MongoDB server
+    const collection = db.collection(playlist); // Getting the collection instance
+
+    // Find the playlist by playlistId and userEmail
+    const result = await collection.findOne({ _id: new ObjectId(playlistId), email: userEmail });
+
+    if (!result) {
+      console.log("playlist not found ", result);
+      return res.status(404).send('Playlist not found');
+    }
+
+    // Remove the song from the songs array based on songlink
+    result.songs = result.songs.filter(song => song.songlink !== songlink);
+
+    // Update the playlist in the database
+    await collection.updateOne(
+      { _id: new ObjectId(playlistId), email: userEmail },
+      { $set: { songs: result.songs } }
+    );
+
+    res.status(200).send('Song removed from playlist');
+  } catch (error) {
+    console.log(error); // Logging any errors that occur during the process
+    res.status(500).send('Internal server error');
+  } finally {
+    if (client) {
+      await client.close();
+    }
+  }
+});
 
 async function GetMyPlaylists() {
     spotifyApi.getUserPlaylists(SpotifyTokenRoute.getUsername(), { limit: 1})

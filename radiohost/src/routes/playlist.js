@@ -58,16 +58,16 @@ export default function Playlist(){
     return (
         <div className="playlist-page">
             <Link to='/home/library' className='playlist-nav'><IoIosArrowBack /></Link>
-            <div className="playlist-container" >
+            <div className="playlist-container">
                 <div className="playlist-header">
-                    <img className="playlist-art"></img>
-                    <Outlet/>
+                    <img className="playlist-art" />
+                    <Outlet />
                     {playlist ? (
-                        <div className="playlist-info">
+                        <div className="playlist-info" key={playlist.id}>
                             <p id="identifier">Playlist</p>
-                            <h1>Playlist: {playlist.title}</h1>
-                            <p>Description: {playlist.description}</p>
-                            <button className="play-button"><IoIosPlayCircle/></button>
+                            <h1>{playlist.title}</h1>
+                            <p>{playlist.description}</p>
+                            <button className="play-button"><IoIosPlayCircle /></button>
                             <button className="delete-button" onClick={handleDeletePlaylist}>Delete Playlist</button>
                         </div>
                     ) : (
@@ -80,10 +80,15 @@ export default function Playlist(){
                         <span>Album</span>
                     </div>
                     {songs.length > 0 ? (
-                        songs.map((song) => <SongCard key={song.songId} 
-                            song={song} 
-                            showAddButton={false}
-                            showAlbum={true}/>)
+                        songs.map((song) => (
+                            <SongCard
+                                key={song.songId || song.id}
+                                song={song}
+                                showAddButton={false}
+                                showAlbum={true}
+                                showDeleteButton={true}
+                            />
+                        ))
                     ) : (
                         <p>No songs found</p>
                     )}

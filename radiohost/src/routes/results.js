@@ -13,9 +13,8 @@ import MusicCard from "../components/musiccard.js";
 
 export default function Results() {
   const [searchParams] = useSearchParams();
-  // const [songs, setSongs] = useState([]);
   const location = useLocation();
-  const query = location.state?.results?.query || ""; // Retrieve query if needed
+  const query = searchParams.get("q") || location.state?.query || ""; // Retrieve query from search parameters or state
   const albums = location.state?.results?.output?.albums || []; // Retrieve albums
   const songs = location.state?.results?.output?.songs || []; // Retrieve songs
   console.log(location);
@@ -23,28 +22,14 @@ export default function Results() {
   console.log(songs);
   console.log(query);
 
-  useEffect(() => {
-    if (query) {
-      console.log("Query:", query);
-      axios
-        .get(`http://localhost:4000/search/searchAll?q=${query}`)
-        .then((response) => {
-          //setSongs(response.data);
-        })
-        .catch((error) => {
-          console.error("Error fetching songs: ", error);
-        });
-    }
-  }, [query]);
-
   return (
     <div className="results-container">
       <div className="search-display">
         <h3>Results for: "{query}" </h3>
-        <button className="search-button">
+        <a href='/home'><button className="search-button">
           {" "}
           <FaSearch />{" "}
-        </button>
+        </button></a>
       </div>
       <div className="song-content">
         <h5> Songs </h5>
@@ -53,6 +38,7 @@ export default function Results() {
         <div className="container albums-container">
           <h2>Albums</h2>
           <div className="cards">
+            {/*needs to be album card */}
             {albums.map((album, index) => (
               <MusicCard key={index} item={album} type="album" />
             ))}
