@@ -17,7 +17,7 @@ export default function Registration() {
                 password
             };
             console.log(data);
-            const response = await axios.post('http://localhost:4000/register', data, { withCredentials: true });
+            const response = await axios.post('http://localhost:4000/auth/register', data, { withCredentials: true });
             if (response.status === 201) {
                 console.log(response);
                 NotificationManager.success('You are registered!', 'Success', 2000);
