@@ -4,6 +4,7 @@ import '../styles/home.css'
 import { IoMdMusicalNote, IoMdBookmark } from "react-icons/io"
 import MusicPlayer from "../components/musicplayer"
 import { Link, Outlet, useLocation } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 
 
 export default function Home() {
@@ -11,6 +12,7 @@ export default function Home() {
     const [user, setUser] = useState(null);
     const [query, setQuery] = useState('');
     const location = useLocation();
+    const navigate = useNavigate(); 
 
     useEffect(() => {
       async function fetchData() {
@@ -39,6 +41,13 @@ export default function Home() {
       try{
         const response = await axios.post('http://localhost:5002/query', { query: query }, { withCredentials: true })
         console.log("Query response: ", response.data);
+        if (response.status === 200){
+          navigate(`/home/results?q=${query}`, {state: { results: response.data }});
+        }
+        else
+        {
+          console.log("Error fetching songs: ", response.data);
+        }
       } catch (err){
         console.error("Error fetching songs: ", err);
       }
