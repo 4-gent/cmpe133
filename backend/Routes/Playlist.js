@@ -1,14 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const cors = require('cors') // Importing the CORS middleware
-const MongoClient = require('mongodb').MongoClient // Importing the MongoDB client
-
-// MongoDB Atlas Connection
-const uri = process.env.ATLAS_URI // Getting the MongoDB connection URI from environment variables
-const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true }) // Creating a new MongoDB client
-
-const dbName = process.env.DATABASE_NAME // Getting the database name from environment variables
-const playlist = process.env.PLAYLIST_COLLECTION // Getting the collection name from environment variables
+const { connectToDatabase } = require('../middleware/db'); // Importing the MongoDB client
 
 // dont need routes/spotify... since its in same directory
 const SpotifyTokenRoute = require('./SpotifyTokens.js');
@@ -16,11 +8,6 @@ const SpotifyTokenRoute = require('./SpotifyTokens.js');
 
 const spotifyApi = SpotifyTokenRoute.getSpotifyApi();
 
-const corsEnable = {
-	origin: 'http://localhost:3000',
-	credentials: true,
-}
-router.use(cors(corsEnable)) // Enabling CORS for all routes
 
 router.get('/UserPlaylists', async(req, res) => {
 	try{
@@ -34,6 +21,7 @@ router.get('/UserPlaylists', async(req, res) => {
 })
 
 router.post('/create', async(req, res) => {
+  let client;
 	try{
     /*
     * You want to make a new playlist in the db
@@ -44,9 +32,8 @@ router.post('/create', async(req, res) => {
     if (!title || !description) {
       return res.status(400).send('Title and description are required');
     }
-    await client.connect();
-    const database = client.db(dbName);
-    const collection = database.collection(playlist);
+    const { client, db, playlist } = await connectToDatabase(); // Connecting to the MongoDB server
+    const collection = db.collection(playlist); // Getting the collection instance
 
     const userEmail = req.session.email;
 
@@ -65,7 +52,8 @@ router.post('/create', async(req, res) => {
 	} catch (error) {
 		console.log(error) // Logging any errors that occur during the registration process
 	} finally {
-		await client.close();
+    if(client)
+		  await client.close();
 	}
 })
 

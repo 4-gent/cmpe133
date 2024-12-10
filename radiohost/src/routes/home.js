@@ -15,13 +15,11 @@ export default function Home() {
           try {
             const response = await axios.get('http://localhost:4000/spotifyAuth/getAccessToken', { withCredentials: true });
             const accessToken = response.data.accessToken;
-            console.log("Access Token:", accessToken);
             setToken(accessToken);  
-            setTimeout(() => {
-              const user_response = axios.get('http://localhost:4000/getUser', { withCredentials: true });
+            setTimeout(async() => {
+              const user_response = await axios.get('http://localhost:4000/user/getUser', { withCredentials: true });
               if (user_response.status === 200) {
                   const user_data = user_response.data;
-                  console.log("User:", user_data);
                   setUser(user_data); // Store user information in state
               } else {
                   console.log(user_response.data);
