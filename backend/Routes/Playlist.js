@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { connectToDatabase } = require('../middleware/db'); // Importing the MongoDB client
+const { ObjectId } = require('mongodb');
 
 // dont need routes/spotify... since its in same directory
 const SpotifyTokenRoute = require('./SpotifyTokens.js');
@@ -9,14 +10,22 @@ const SpotifyTokenRoute = require('./SpotifyTokens.js');
 const spotifyApi = SpotifyTokenRoute.getSpotifyApi();
 
 
-router.get('/UserPlaylists', async(req, res) => {
+router.get('/getAll', async(req, res) => {
+  let client;
 	try{
-		await GetMyPlaylists();
-    //await GetUserFollowedArtists();
+    const { client, db, playlist } = await connectToDatabase(); // Connecting to the MongoDB server
+    const collection = db.collection(playlist); // Getting the collection instance
+
+    const userEmail = req.session.user.email;
+
+    const playlists = await collection.find({email: userEmail}).toArray();
+
+    res.status(200).send(playlists);
 	} catch (error) {
 		console.log(error) // Logging any errors that occur during the registration process
 	} finally {
-		
+    if(client)
+      await client.close();
 	}
 })
 
@@ -27,20 +36,19 @@ router.post('/create', async(req, res) => {
     * You want to make a new playlist in the db
     * then when you want to play music, you get song info into the db then play it
     */
-    const {title, description} = req.body;
-
+    const { title, description } = req.body; // Extracting 'title' and 'description' from the request body
     if (!title || !description) {
       return res.status(400).send('Title and description are required');
     }
     const { client, db, playlist } = await connectToDatabase(); // Connecting to the MongoDB server
     const collection = db.collection(playlist); // Getting the collection instance
 
-    const userEmail = req.session.email;
+    const userEmail = req.session.user.email;
 
     const newPlaylist = {
       title: title,
       description: description,
-      userEmail: userEmail,
+      email: userEmail,
       songs: [],
       createdAt: new Date()
     }
@@ -55,6 +63,47 @@ router.post('/create', async(req, res) => {
     if(client)
 		  await client.close();
 	}
+})
+
+router.post('/get-playlist', async(req, res) => {
+  let client;
+  try{
+    const collection = db.collection(playlist); // Getting the collection instance
+
+    const userEmail = req.session.user.email;
+
+    const {title} = req.body;
+
+    const playlist = await collection.findOne({email: userEmail, title: title});
+
+    res.status(200).send(playlist);
+  } catch (error) {
+    console.log(error) // Logging any errors that occur during the registration process
+  } finally {
+    if(client)
+      await client.close();
+  }
+})
+
+router.delete('/delete/:id', async(req, res) => {
+  let client;
+  try{
+    const { db, playlist } = await connectToDatabase(); // Connecting to the MongoDB server
+    const collection = db.collection(playlist); // Getting the collection instance
+
+    const userEmail = req.session.user.email;
+
+    const result = await collection.deleteOne({ email: userEmail, _id: new ObjectId(req.params.id) });
+    if (result.deletedCount === 0) {
+      return res.status(404).send('Playlist not found');
+    }
+    res.status(200).send('Playlist deleted');
+  } catch (error) {
+    console.log(error) // Logging any errors that occur during the registration process
+  } finally {
+    if(client)
+      await client.close();
+  }
 })
 
 router.put('/AddSongToPlaylist', async(req, res) => {
