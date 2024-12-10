@@ -14,12 +14,12 @@ load_dotenv()
 
 # Initialize Flask app
 app = Flask(__name__)
-CORS(app)
+CORS(app, supports_credentials=True)
 
 # Initialize tools and agent
 spotify_tool = SpotifyTool(os.getenv("SPOTIFY_CLIENT_ID"), os.getenv("SPOTIFY_CLIENT_SECRET"))
 duckduckgo_tool = DuckDuckGoSearchResults()
-model = ChatOpenAI(model="gpt-4o")
+model = ChatOpenAI(model="gpt-4o", api_key=os.getenv("OPENAIAPI_KEY"))
 tools = [
     Tool(name="Spotify Search", func=spotify_tool.search_music, description="Useful for searching music"),
     Tool(name="DuckDuckGo Search", func=duckduckgo_tool.invoke, description="Useful for searching the web"),
@@ -30,16 +30,18 @@ agent_executor = AgentExecutor.from_agent_and_tools(
     agent=agent, tools=tools, verbose=True, handle_parsing_errors=True
 )
 
-@app.route('/query', methods=['POST'])
+@app.route('/query', methods=['GET', 'POST'])
 def query_ai():
-    user_input = request.json.get("query")
-    if not user_input:
-        return jsonify({"error": "No query provided"}), 400
-    try:
-        response = agent_executor.invoke({"input": user_input})
-        return jsonify(response)
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
+    if request.method == 'POST':
+        user_input = request.json.get("query")
+        print("user_input:", user_input)
+        if not user_input:
+            return jsonify({"error": "No query provided"}), 400
+        try:
+            response = agent_executor.invoke({"input": user_input})
+            return jsonify(response)
+        except Exception as e:
+            return jsonify({"error": str(e)}), 500
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5002)

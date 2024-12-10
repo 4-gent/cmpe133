@@ -45,7 +45,6 @@ export default function Library() {
             if (response.status === 200) {
                 console.log(response);
                 setShowModal(false);
-                // navigate(`/home/playlist/${response.data.id}`);
                 window.location.reload();
             }
         } catch (error){

@@ -34,10 +34,11 @@ export default function Home() {
       fetchData();
     }, []); // Empty dependency array ensures this runs only once when the component mount
 
-    const handleQuery = (e) => {
+    const handleQuery = async(e) => {
       e.preventDefault();
       try{
-        axios.post('http://localhost:5002/query', { query: query }, { withCredentials: true })
+        const response = await axios.post('http://localhost:5002/query', { query: query }, { withCredentials: true })
+        console.log("Query response: ", response.data);
       } catch (err){
         console.error("Error fetching songs: ", err);
       }
@@ -59,7 +60,7 @@ export default function Home() {
                     <h1>Welcome, {user.username}</h1>
                     <p>Email: {user.email}</p>
                     <form onSubmit={handleQuery}>
-                      <input className="query-input" placeholder="Search...." onChange={(e) => setQuery(e.target.value)} />
+                      <input className="query-input" value={query} placeholder="Search...." onChange={(e) => setQuery(e.target.value)} />
                       <button type="submit">Search</button>
                     </form>
                   </div>
