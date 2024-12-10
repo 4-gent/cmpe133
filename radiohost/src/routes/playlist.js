@@ -1,46 +1,49 @@
 import React, { useState, useEffect }  from "react"
-import { useParams, useHistory } from "react-router-dom";  // To fetch params from the URL
+import { useParams } from "react-router-dom";  // To fetch params from the URL
 import "../styles/playlist.css"
 import { IoIosArrowBack } from "react-icons/io";
 import { IoIosPlayCircle } from "react-icons/io"
 import SongCard from "../components/songcard.js"
 import axios from "axios"
-import { Link } from "react-router-dom"
+import { Link, Outlet } from 'react-router-dom'
 
 
 export default function Playlist(){
     const { id } = useParams();  
 
-    const query = "twice";
     const [songs, setSongs] = useState([]);
+    const [playlist, setPlaylist] = useState({});
 
-    // i used search query for now to render the songs in the player
-    useEffect(() => { 
-        if (query) {
-            console.log("Query:", query);  
-            axios.get(`http://localhost:4000/search/searchAll?q=${query}`)
-            .then(response => {
-                setSongs(response.data); 
-            })
-            .catch(error => {
-                console.error("Error fetching songs: ", error);
-            });
-
-        }
-    }, [query]);
-
+    // Fetch songs for the playlist
     useEffect(() => {
-        async function fetchData() {
+        async function fetchSongs() {
             try {
-                const response = await axios.get(`http://localhost:4000/playlists/get-playlist/${id}`, { withCredentials: true });
-                console.log("Songs:", response.data);
-                setSongs(response.data);
+                const response = await axios.get(`http://localhost:4000/playlists/get-songs/${id}`, { withCredentials: true });
+                setTimeout(() => {
+                    setSongs(response.data);
+                }, 1000);
             } catch (error) {
                 console.error("Error fetching songs: ", error);
             }
-        };
-        fetchData();
-    })
+        }
+        fetchSongs();
+    }, [id]);
+
+    // Fetch playlist details
+    useEffect(() => {
+        async function fetchPlaylist() {
+            try {
+                const response = await axios.get(`http://localhost:4000/playlists/get-playlist/${id}`, { withCredentials: true });
+                console.log("Playlist: ", response.data);
+                setTimeout(() => {
+                    setPlaylist(response.data);
+                }, 1000);
+            } catch (error) {
+                console.error("Error fetching playlist: ", error);
+            }
+        }
+        fetchPlaylist();
+    }, [id]);
 
     const handleDeletePlaylist = async(e) => {
         e.preventDefault();
@@ -58,12 +61,18 @@ export default function Playlist(){
             <div className="playlist-container" >
                 <div className="playlist-header">
                     <img className="playlist-art"></img>
-                    <div className="playlist-info">
-                        <p id="identifier">Playlist</p>
-                        <h1>Playlist: {id}</h1>
-                        <p>Description: Details for playlist with ID {id}</p>
-                        <button className="play-button"><IoIosPlayCircle/></button>
-                    </div>
+                    <Outlet/>
+                    {playlist ? (
+                        <div className="playlist-info">
+                            <p id="identifier">Playlist</p>
+                            <h1>Playlist: {playlist.title}</h1>
+                            <p>Description: {playlist.description}</p>
+                            <button className="play-button"><IoIosPlayCircle/></button>
+                            <button className="delete-button" onClick={handleDeletePlaylist}>Delete Playlist</button>
+                        </div>
+                    ) : (
+                        <p>Loading...</p>
+                    )}
                 </div>
                 <div className="song-container">
                     <div className="song-table-header">
@@ -71,17 +80,14 @@ export default function Playlist(){
                         <span>Album</span>
                     </div>
                     {songs.length > 0 ? (
-                    songs.map((song) => <SongCard key={song.songId} 
-                        song={song} 
-                        showAddButton={false}
-                        showAlbum={true}/>)
+                        songs.map((song) => <SongCard key={song.songId} 
+                            song={song} 
+                            showAddButton={false}
+                            showAlbum={true}/>)
                     ) : (
-                    <p>No songs found</p>
+                        <p>No songs found</p>
                     )}
                 </div>
-                <form className="delete-playlist" onSubmit={handleDeletePlaylist}>
-                    <button type="submit" className="delete-button">Delete Playlist</button>
-                </form>
             </div>
         </div>
     );
