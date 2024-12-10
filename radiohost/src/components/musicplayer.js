@@ -26,6 +26,7 @@ export default function MusicPlayer(props) {
     const [is_active, setActive] = useState(false);
     const [current_track, setTrack] = useState(track);
     const [deviceId, setDeviceId] = useState(null);
+    const [isPlayerInitialized, setIsPlayerInitialized] = useState(false);
 
     const toggleExpansion = () => {
         setIsExpanded(!isExpanded);
@@ -53,6 +54,7 @@ export default function MusicPlayer(props) {
     }, [query]);
 
     
+    
     useEffect(() => {
         if (!window.Spotify) { 
             const script = document.createElement("script");
@@ -60,9 +62,8 @@ export default function MusicPlayer(props) {
             script.async = true;
             document.body.appendChild(script);
         }
-    
+
         let player;
-    
         window.onSpotifyWebPlaybackSDKReady = () => {
             if (player) {
                 console.log("Player already initialized");
@@ -78,14 +79,12 @@ export default function MusicPlayer(props) {
                 console.log('Ready with Device ID', device_id);
                 setDeviceId(device_id);
             });
-    
             player.addListener('not_ready', ({ device_id }) => {
                 console.log('Device ID has gone offline', device_id);
             });
-    
             player.addListener('player_state_changed', (state) => {
                 if (!state) return;
-    
+
                 setTrack(state.track_window.current_track);
                 setPaused(state.paused);
     
@@ -101,8 +100,13 @@ export default function MusicPlayer(props) {
         return () => {
             if (player) {
                 player.disconnect();
+                setPaused(true);
+                setActive(false);
+                setTrack(null);
+                console.log("State reset and player disconnected.");
             }
         };
+    
     }, [props.token]);
 
     const playTrack = (trackUri) => {

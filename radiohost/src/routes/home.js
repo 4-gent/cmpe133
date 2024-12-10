@@ -39,7 +39,7 @@ export default function Home() {
                     <Link to="/home/results" className="nav-item"><IoMdMusicalNote /></Link> 
                     <Link to="/home/library" className="nav-item"><IoMdBookmark /></Link>
                 </div>
-                <MusicPlayer token={token}/>
+                {token && <MusicPlayer token={token}/>}
             </header>
             <div> 
                 <Outlet/>
