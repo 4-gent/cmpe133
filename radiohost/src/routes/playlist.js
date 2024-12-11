@@ -69,14 +69,13 @@ export default function Playlist(){
             <div className="playlist-container">
                 <div className="playlist-header">
                     <img className="playlist-art" src="https://st2.depositphotos.com/4441075/7805/v/450/depositphotos_78053068-stock-illustration-music-web-icon-with-note.jpg" />
-                    <Outlet />
                     {playlist ? (
                         <div className="playlist-info" key={playlist.id}>
                             <p id="identifier">Playlist</p>
                             <h1>{playlist.title}</h1>
                             <p>{playlist.description}</p>
                             <button className="play-button" onClick={handlePlayPlaylist}><IoIosPlayCircle /></button>
-                            
+                            <button className="delete-button" onClick={handleDeletePlaylist}>Delete Playlist</button>
                         </div>
                     ) : (
                         <p>Loading...</p>
@@ -93,15 +92,12 @@ export default function Playlist(){
                                 song={song}
                                 showAddButton={false}
                                 showAlbum={false}
-                                showDeleteButton={false}
+                                showDeleteButton={true}
                             />
                         ))
                     ) : (
                         <p>No songs found</p>
                     )}
-                </div>
-                <div className="delete-section">
-                <button className="delete-playlist-button" onClick={handleDeletePlaylist}>Delete Playlist</button>
                 </div>
             </div>
         </div>

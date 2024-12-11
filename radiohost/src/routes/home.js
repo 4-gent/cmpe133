@@ -12,6 +12,7 @@ export default function Home() {
     const [token, setToken] = useState('');
     const [user, setUser] = useState(null);
     const [query, setQuery] = useState('');
+    const [loading, setLoading] = useState(false);
     const [currentPlaylist, setCurrentPlaylist] = useState(null);
     const location = useLocation();
     const navigate = useNavigate(); 
@@ -40,6 +41,7 @@ export default function Home() {
 
     const handleQuery = async(e) => {
       e.preventDefault();
+      setLoading(true);
       try{
         const response = await axios.post('http://localhost:5002/query', { query: query }, { withCredentials: true })
         console.log("Query response: ", response.data);
@@ -52,6 +54,8 @@ export default function Home() {
         }
       } catch (err){
         console.error("Error fetching songs: ", err);
+      } finally{
+        setLoading(false);
       }
     }
 
@@ -66,7 +70,7 @@ export default function Home() {
                 {token && <MusicPlayer token={token} playlist={currentPlaylist} />}
             </header>
             <div> 
-                <Outlet context={{ setCurrentPlaylist }} token={token} />
+              <Outlet context={{ setCurrentPlaylist }} token={token} />
                 {user && location.pathname === '/home' && (
                   <Fade top>                  
                     <div className="home-body">
