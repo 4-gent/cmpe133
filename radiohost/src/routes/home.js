@@ -12,7 +12,7 @@ export default function Home() {
     const [token, setToken] = useState('');
     const [user, setUser] = useState(null);
     const [query, setQuery] = useState('');
-    const [loading, setLoading] = useState(false);
+    const [currentPlaylist, setCurrentPlaylist] = useState(null);
     const location = useLocation();
     const navigate = useNavigate(); 
 
@@ -40,12 +40,11 @@ export default function Home() {
 
     const handleQuery = async(e) => {
       e.preventDefault();
-      setLoading(true);
       try{
         const response = await axios.post('http://localhost:5002/query', { query: query }, { withCredentials: true })
         console.log("Query response: ", response.data);
         if (response.status === 200){
-          navigate(`/home/results?q=${query}`, {state: { results: response.data, query: query }});
+          navigate(`/home/results?q=${query}`, {state: { results: response.data }});
         }
         else
         {
@@ -53,8 +52,6 @@ export default function Home() {
         }
       } catch (err){
         console.error("Error fetching songs: ", err);
-      } finally{
-        setLoading(false);
       }
     }
 
@@ -66,10 +63,10 @@ export default function Home() {
                     <Link to="/home/library" className="nav-item"><IoMdBookmark /></Link>
                     <Link to="/" className="nav-item"><IoMdLogOut /></Link>
                 </div>
-                {token && <MusicPlayer token={token}/>}
+                {token && <MusicPlayer token={token} playlist={currentPlaylist} />}
             </header>
             <div> 
-                <Outlet/>
+                <Outlet context={{ setCurrentPlaylist }} token={token} />
                 {user && location.pathname === '/home' && (
                   <Fade top>                  
                     <div className="home-body">

@@ -1,11 +1,12 @@
 import React, { useState, useEffect }  from "react"
 import { useParams } from "react-router-dom";  // To fetch params from the URL
 import "../styles/playlist.css"
+import defaultimg from "../assets/defaultalbum.png"
 import { IoIosArrowBack } from "react-icons/io";
 import { IoIosPlayCircle } from "react-icons/io"
 import SongCard from "../components/songcard.js"
 import axios from "axios"
-import { Link, Outlet } from 'react-router-dom'
+import { Link, useOutletContext } from 'react-router-dom'
 
 
 export default function Playlist(){
@@ -13,6 +14,13 @@ export default function Playlist(){
 
     const [songs, setSongs] = useState([]);
     const [playlist, setPlaylist] = useState({});
+    const { setCurrentPlaylist } = useOutletContext();
+
+    const handlePlayPlaylist = async(e) => {
+        console.log("play clicked")
+        setCurrentPlaylist({ ...playlist, songs }); // Set playlist and songs in shared state
+    };
+
 
     // Fetch songs for the playlist
     useEffect(() => {
@@ -67,8 +75,8 @@ export default function Playlist(){
                             <p id="identifier">Playlist</p>
                             <h1>{playlist.title}</h1>
                             <p>{playlist.description}</p>
-                            <button className="play-button"><IoIosPlayCircle /></button>
-                            <button className="delete-button" onClick={handleDeletePlaylist}>Delete Playlist</button>
+                            <button className="play-button" onClick={handlePlayPlaylist}><IoIosPlayCircle /></button>
+                            
                         </div>
                     ) : (
                         <p>Loading...</p>
@@ -91,6 +99,9 @@ export default function Playlist(){
                     ) : (
                         <p>No songs found</p>
                     )}
+                </div>
+                <div className="delete-section">
+                <button className="delete-playlist-button" onClick={handleDeletePlaylist}>Delete Playlist</button>
                 </div>
             </div>
         </div>

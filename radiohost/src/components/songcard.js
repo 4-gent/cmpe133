@@ -5,8 +5,8 @@ import axios from "axios";
 import { NotificationContainer, NotificationManager } from 'react-notifications';
 import 'react-notifications/lib/notifications.css';
 
-const SongCard = ({ song, showAddButton = true, showAlbum = true, onClick }) => {
-  const [showDeleteButton, setShowDeleteButton] = useState(true);
+const SongCard = ({ song, showAddButton = true, showAlbum = true, onClick,  showDeleteButton=false}) => {
+  // const [showDeleteButton, setShowDeleteButton] = useState(true);
 
   if (!song) return null;
 
