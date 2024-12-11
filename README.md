@@ -112,9 +112,13 @@ Backend development is done with Node.js, which communicates with MongoDB Atlas 
 1. **`cd`** into the `flask-server` folder
    
 2. Install the required packages
-   
+
+    ```bash
     pip install -r requirements.txt
+     ```
+   
 
 3. Start the flask server:
-
-   python3 app.py
+    ```bash
+    python3 app.py
+     ```
