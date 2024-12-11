@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react"
 import axios from "axios"
 import '../styles/home.css'
-import { IoMdMusicalNote, IoMdBookmark } from "react-icons/io"
+import { IoMdMusicalNote, IoMdBookmark, IoMdLogOut } from "react-icons/io"
 import MusicPlayer from "../components/musicplayer"
 import { Link, Outlet, useLocation } from 'react-router-dom'
 import { useNavigate } from 'react-router-dom'
-
+import { FaSpinner } from "react-icons/fa"
+import Fade from 'react-reveal/Fade'
 
 export default function Home() {
     const [token, setToken] = useState('');
@@ -61,25 +62,27 @@ export default function Home() {
         <div> 
             <header className="home-header">
                 <div className="nav-left">
-                    <Link to="/home/results" className="nav-item"><IoMdMusicalNote /></Link> 
+                    <Link to="/home" className="nav-item"><IoMdMusicalNote /></Link> 
                     <Link to="/home/library" className="nav-item"><IoMdBookmark /></Link>
+                    <Link to="/" className="nav-item"><IoMdLogOut /></Link>
                 </div>
                 {token && <MusicPlayer token={token}/>}
             </header>
             <div> 
                 <Outlet/>
                 {user && location.pathname === '/home' && (
-                  <div>
-                    <h1>Welcome, {user.username}</h1>
-                    <p>Email: {user.email}</p>
-                    <form onSubmit={handleQuery}>
-                      <input className="query-input" value={query} placeholder="Search...." onChange={(e) => setQuery(e.target.value)} />
-                      <button type="submit">Search</button>
-                    </form>
-                    {loading && <p>Loading...</p>}
-                  </div>
+                  <Fade top>                  
+                    <div className="home-body">
+                      <h1 className="home-title">Welcome, {user.username}</h1>
+                      <form className="query-container" onSubmit={handleQuery}>
+                        <input className="query-input" value={query} placeholder="What do you feel like listening to?" onChange={(e) => setQuery(e.target.value)} />
+                        <button className="query-button" type="submit">Search</button>
+                      </form>
+                      {loading && <div className="loading-container"><FaSpinner className="loading-icon" /></div>}
+                    </div>
+                  </Fade>
                 )}
-                {!user && <p>Loading...</p>}
+                {!user && <div className="loading-container"><FaSpinner className="loading-icon" /></div>}
             </div>
         </div>
     )

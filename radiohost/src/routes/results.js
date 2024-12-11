@@ -32,7 +32,6 @@ export default function Results() {
         </button></a>
       </div>
       <div className="song-content">
-        <h5> Songs </h5>
         {/* Container for Albums */}
         {/* Render Albums */}
         <div className="container albums-container">

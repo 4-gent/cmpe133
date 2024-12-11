@@ -61,13 +61,15 @@
     transform: scale(1.1);
 }
 .main-body{
-    padding-top: 5vh;
+    padding-top: 10vh;
+    padding-bottom: 10vh;
 }
 .main-body-left{
     text-align: left;
-    margin-left: 7vw;
+    margin-left: 6vw;
+    padding-bottom: 5vh;
 }
 .main-body-right{
     text-align: right;
-    margin-right: 7vw;
+    margin-right: 6vw;
 }

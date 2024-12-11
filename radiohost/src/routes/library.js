@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom"
 import axios from "axios"
 import { NotificationManager, NotificationContainer } from 'react-notifications' // Importing NotificationManager and NotificationContainer from 'react-notifications'
 import 'react-notifications/lib/notifications.css'
+import Fade from 'react-reveal/Fade'
 
 export default function Library() {
     const [showModal, setShowModal] = useState(false);
@@ -68,20 +69,22 @@ export default function Library() {
                 <h3>My Collection </h3>
                 <div className="library-grid">
                 {playlists.map((playlist, index) => (
-                    <div className="library-card" 
-                        key={playlist._id}
-                        onClick={() => goToPlaylist(playlist._id)} 
-                    >
-                        {playlist.image ? (
-                        <img src={playlist.image} alt={playlist.title} className="card-image" /> 
-                        ) : (
-                            <img src={defaultimg} alt={playlist.title} className="card-image" /> 
-                        )}
-                        <div className="card-info">
-                            <h4 className="card-title">{playlist.title}</h4>
-                            <p className="card-description">{playlist.description}</p>
+                    <Fade left>
+                        <div className="library-card" 
+                            key={playlist._id}
+                            onClick={() => goToPlaylist(playlist._id)} 
+                        >
+                            {playlist.image ? (
+                            <img src={playlist.image} alt={playlist.title} className="card-image" /> 
+                            ) : (
+                                <img src={defaultimg} alt={playlist.title} className="card-image" /> 
+                            )}
+                            <div className="card-info">
+                                <h4 className="card-title">{playlist.title}</h4>
+                                <p className="card-description">{playlist.description}</p>
+                            </div>
                         </div>
-                    </div>
+                    </Fade>
                 ))}
                 {!playlists.length && <p>Loading...</p>}
                 </div>
