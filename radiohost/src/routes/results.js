@@ -11,7 +11,7 @@ export default function Results(props) {
   const [searchParams] = useSearchParams();
   const [albumImages, setAlbumImages] = useState([]);
   const [songImages, setSongImages] = useState([]);
-  const {  setCurrentPlaylist } = useOutletContext();
+  const { setCurrentPlaylist } = useOutletContext();
 
   const location = useLocation();
   const query = searchParams.get("q") || location.state?.query || ""; // Retrieve query from search parameters or state
@@ -74,7 +74,7 @@ export default function Results(props) {
     <div className="results-container">
       <div className="search-display">
         <h3>Results for: "{query}" </h3>
-        <Link to='/home'><button className="search-button">
+          <Link to='/home'><button className="search-button">
           {" "}
           <FaSearch />{" "}
         </button></Link>
