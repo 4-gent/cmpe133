@@ -106,3 +106,15 @@ Backend development is done with Node.js, which communicates with MongoDB Atlas 
     ```
 
     - As you code and make updates, it will compile and show you runtime errors/changes as you develop.
+  
+## Getting Started with Flask Server
+
+1. **`cd`** into the `flask-server` folder
+   
+2. Install the required packages
+   
+    pip install -r requirements.txt
+
+3. Start the flask server:
+
+   python3 app.py
