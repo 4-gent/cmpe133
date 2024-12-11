@@ -127,3 +127,11 @@ Backend development is done with Node.js, which communicates with MongoDB Atlas 
 4. API Keys:
    - This application uses OpenAI and Tavily, you will need to make respective accounts and get API keys for the .env in the flask-server directory
    - This application also uses the Spotify Developer API, you will need to make a developer account that ties to a premium spotify account in order to run music, those keys will also be placed into the .env
+
+## Getting Started with the OpenAI
+
+1. Go to https://platform.openai.com/docs/overview
+
+2. Travel to dashboard and create a project.
+
+3. Acquire API key for the project
