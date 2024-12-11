@@ -10,6 +10,7 @@ const MusicCard = ({ item, type = "song", showAddButton = true, onClick }) => {
      
 
       {/* Info */}
+      <img src="https://st2.depositphotos.com/4441075/7805/v/450/depositphotos_78053068-stock-illustration-music-web-icon-with-note.jpg" />
       <div className="song-info">
         <h4 className="song-title">{isSong ? item.songName : item.albumName}</h4>
         <p className="song-artist">
@@ -31,6 +32,18 @@ const MusicCard = ({ item, type = "song", showAddButton = true, onClick }) => {
           <button className="song-button">
             <MdOutlineAddCircleOutline />
           </button>
+          {showDropdown && (
+            <div className="dropdown">
+              <label className="dropdown-label">Your Playlists</label>
+              <ul>
+                {playlists.map((playlist) => (
+                  <li key={playlist._id} onClick={() => handleAddToPlaylist(playlist._id)}>
+                    {playlist.title}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
         </div>
       )}
     </div>

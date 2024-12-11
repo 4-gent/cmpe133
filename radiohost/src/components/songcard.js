@@ -31,6 +31,7 @@ const SongCard = ({ song, showAddButton = true, showAlbum = true, onClick,  show
       {albumImageUrl && (
         <img className="album-art" src={albumImageUrl} alt={`${song.songName} album art`} />
       )}
+      <img src="https://st2.depositphotos.com/4441075/7805/v/450/depositphotos_78053068-stock-illustration-music-web-icon-with-note.jpg" />
       <div className="song-info">
         <h4 className="song-title" key={song.id}>{song.songName}</h4>
         <p className="song-artist">
@@ -53,7 +54,7 @@ const SongCard = ({ song, showAddButton = true, showAlbum = true, onClick,  show
         </div>
       )}
       {showDeleteButton && (
-        <button className="delete-button" onClick={handleDeleteSong}>Delete</button>
+        <button className="delete-song-button" onClick={handleDeleteSong}>Remove</button>
       )}
     </div>
   );

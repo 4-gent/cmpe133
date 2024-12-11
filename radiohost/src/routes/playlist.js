@@ -68,7 +68,8 @@ export default function Playlist(){
             <Link to='/home/library' className='playlist-nav'><IoIosArrowBack /></Link>
             <div className="playlist-container">
                 <div className="playlist-header">
-                    <img className="playlist-art" src={ defaultimg } />
+                    <img className="playlist-art" src="https://st2.depositphotos.com/4441075/7805/v/450/depositphotos_78053068-stock-illustration-music-web-icon-with-note.jpg" />
+                    <Outlet />
                     {playlist ? (
                         <div className="playlist-info" key={playlist.id}>
                             <p id="identifier">Playlist</p>
@@ -91,8 +92,8 @@ export default function Playlist(){
                                 key={song.songId || song.id}
                                 song={song}
                                 showAddButton={false}
-                                showAlbum={true}
-                                showDeleteButton={true}
+                                showAlbum={false}
+                                showDeleteButton={false}
                             />
                         ))
                     ) : (

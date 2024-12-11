@@ -34,48 +34,51 @@
     transition: transform 0.2s;
     height: auto;
     overflow: hidden; 
+    transition: 300ms;
+
 }
   
-  .library-card:hover {
-    transform: scale(1.05);
-  }
-  
-  .card-image {
-    width: 100%;
-    height: auto;
-    border-radius: 10px;
-    object-fit: cover; 
-  }
-  
-  .card-info {
-    margin-top: 30px;
-    text-align: left;
-    align-content: flex-end;
-  }
-  
-  .card-title {
-    font-size: 1rem;
-    font-weight: bold;
-    color: #333;
-  }
-  
-  .card-description {
-    font-size: 0.9rem;
-    color: #666;
-    margin: 0;
-  }
+.library-card:hover {
+  transition: 300ms !important;
+  transform: scale(1.05) !important;
+}
 
-  .create-playlist {
-    position: fixed; 
-    bottom: 60px;
-    right: 60px; 
-    background-color: #e8def8;
-    border: none;
-    color: black;
-    padding: 0.4em 1.5em;
-    border-radius: 18px;
-    text-align: center;
-  }
+.card-image {
+  width: 100%;
+  height: auto;
+  border-radius: 10px;
+  object-fit: cover; 
+}
+
+.card-info {
+  margin-top: 30px;
+  text-align: left;
+  align-content: flex-end;
+}
+
+.card-title {
+  font-size: 1rem;
+  font-weight: bold;
+  color: #333;
+}
+
+.card-description {
+  font-size: 0.9rem;
+  color: #666;
+  margin: 0;
+}
+
+.create-playlist {
+  position: fixed; 
+  bottom: 60px;
+  right: 60px; 
+  background-color: #e8def8;
+  border: none;
+  color: black;
+  padding: 0.4em 1.5em;
+  border-radius: 18px;
+  text-align: center;
+}
 
 .create-playlist:hover{
     transition: 300ms;
@@ -124,16 +127,36 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  height: 100%;
+  width: 100%;
 }
 
 .create-form input {
+  width: 70%;
   padding: 10px;
   border: 1px solid #ccc;
   border-radius: 5px;
   font-size: 1rem;
+  margin: 10px;
+  border: transparent;
+  box-shadow: 0px 6px 10px 4px #CAC4D0;
+  transition: 300ms;
+
+}
+
+.create-form input:focus{
+  outline: none;
+}
+
+.create-form input:hover{
+  transform: scale(1.05);
+  transition: 300ms;
+  box-shadow: 0px 6px 10px 8px #CAC4D0;
 }
 
 .create-button {
+  margin-top: 3vh;
+  position: relative;
   background-color: #e8def8;
   border: none;
   color: black;
@@ -141,6 +164,8 @@
   text-align: center;
   height: 15%;
   width: 20%;
+  border: transparent;
+  box-shadow: 0px 6px 10px 2px rgba(76, 16, 54, 0.5);
 }
 
 .create-button:hover{
