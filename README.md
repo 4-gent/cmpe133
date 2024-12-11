@@ -104,8 +104,10 @@ Backend development is done with Node.js, which communicates with MongoDB Atlas 
     ```bash
     sudo yarn start
     ```
-
-    - As you code and make updates, it will compile and show you runtime errors/changes as you develop.
+4. API Keys:
+   - This application uses MongoDB Atlas for storage, you will need to make an Atlas account, a cluster, and grab the URI and other relevant keys and store them in a .env
+   - This application also uses the Spotify Developer API, you will need to make a developer account that ties to a premium spotify account in order to run music, those keys will also be placed into the .env
+- As you code and make updates, it will compile and show you runtime errors/changes as you develop.
   
 ## Getting Started with Flask Server
 
@@ -122,3 +124,6 @@ Backend development is done with Node.js, which communicates with MongoDB Atlas 
     ```bash
     python3 app.py
      ```
+4. API Keys:
+   - This application uses OpenAI and Tavily, you will need to make respective accounts and get API keys for the .env in the flask-server directory
+   - This application also uses the Spotify Developer API, you will need to make a developer account that ties to a premium spotify account in order to run music, those keys will also be placed into the .env
