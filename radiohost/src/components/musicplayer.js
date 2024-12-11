@@ -26,7 +26,8 @@ export default function MusicPlayer(props) {
     const [is_active, setActive] = useState(false);
     const [current_track, setTrack] = useState(track);
     const [deviceId, setDeviceId] = useState(null);
-    const [isPlayerInitialized, setIsPlayerInitialized] = useState(false);
+    const [queue, setQueue] = useState([]);
+    const [currentIndex, setCurrentIndex] = useState(0);
 
     const toggleExpansion = () => {
         setIsExpanded(!isExpanded);
@@ -36,22 +37,32 @@ export default function MusicPlayer(props) {
         e.stopPropagation(); 
     };
 
-    const query = "twice";
-    const [songs, setSongs] = useState([]);
 
-    useEffect(() => { 
-        if (query) {
-            console.log("Query:", query);  
-            axios.get(`http://localhost:4000/search/searchAll?q=${query}`)
-            .then(response => {
-                setSongs(response.data); 
-            })
-            .catch(error => {
-                console.error("Error fetching songs: ", error);
-            });
-
+    useEffect(() => {
+        if (props.playlist && props.playlist.songs) {
+            setQueue(props.playlist.songs); 
+            setCurrentIndex(0);
+            playTrack(props.playlist.songs[0]); 
         }
-    }, [query]);
+    }, [props.playlist]);
+
+
+    // const query = "twice";
+    // const [songs, setSongs] = useState([]);
+
+    // useEffect(() => { 
+    //     if (query) {
+    //         console.log("Query:", query);  
+    //         axios.get(`http://localhost:4000/search/searchAll?q=${query}`)
+    //         .then(response => {
+    //             setSongs(response.data); 
+    //         })
+    //         .catch(error => {
+    //             console.error("Error fetching songs: ", error);
+    //         });
+
+    //     }
+    // }, [query]);
 
     
     
@@ -109,8 +120,10 @@ export default function MusicPlayer(props) {
     
     }, [props.token]);
 
-    const playTrack = (trackUri) => {
-        console.log("URI: ", trackUri)
+    const playTrack = (song) => {
+        const trackUri = `spotify:track:${song.songlink.split("/track/")[1]}`; // Extract URI from songlink
+        console.log("URI:", trackUri);
+
         if (!deviceId) {
             console.error("Device ID is not set yet.");
             return;
@@ -140,6 +153,23 @@ export default function MusicPlayer(props) {
             .catch(err => console.error("Error:", err));
     };
 
+
+    const skipToNext = () => {
+        if (queue.length === 0) return;
+
+        const nextIndex = (currentIndex + 1) % queue.length; // Loop back to the start if at the end
+        setCurrentIndex(nextIndex);
+        playTrack(queue[nextIndex]); // Play the next track
+    };
+
+    const skipToPrevious = () => {
+        if (queue.length === 0) return;
+
+        const previousIndex = (currentIndex - 1 + queue.length) % queue.length; // Wrap around to the end if at the start
+        setCurrentIndex(previousIndex);
+        playTrack(queue[previousIndex]); // Play the previous track
+    };
+
     
     return (
         <>
@@ -156,26 +186,27 @@ export default function MusicPlayer(props) {
                             <p className="curr-artist">{is_active? current_track.artists[0].name : "" }</p>
                          </div>
                         <div className="controls" onClick={handleControlClick} >
-                            <button ><IoPlaySkipBackCircle /></button>
+                            <button onClick={skipToPrevious}><IoPlaySkipBackCircle /></button>
                              <button onClick={() => {player.togglePlay()}}>
                                 {is_paused ? <IoIosPlayCircle /> : <IoPauseCircle />}
                             </button>
-                            <button><IoPlaySkipForwardCircle /></button>
+                            <button onClick={skipToNext}><IoPlaySkipForwardCircle /></button>
                         </div>   
                     </div>
-                    <div className="song-duration-bar" onClick={handleControlClick}>
-                        <input type="range" className="seek-slider" max="100" value="0"/>
-                    </div>
+                  
                         {isExpanded && (
                              <div className="queue" onClick={handleControlClick}>
                                 <h3>Playing From:</h3>
-                                <h3 style={{color: '#4F378B'}}> Your Playlist</h3>
+                                <h3 style={{color: '#4F378B'}}> {props.playlist && props.playlist.title ? props.playlist.title : ""}</h3>
                             <div>
-                                {songs.length > 0 ? (
-                                    songs.map((song) => <SongCard key={song.songId} song={song}   
-                                        showAddButton={false} 
-                                        showAlbum={false}
-                                        onClick={() => playTrack(song.songUri)}
+                                {queue.length > 0 ? (
+                                    queue.map((song, index) => <SongCard 
+                                        key={song.songId || song.id}
+                                        song={song}
+                                        showAddButton={false}
+                                        showAlbum={true}
+                                        showDeleteButton={false}
+                                        onClick={() => { setCurrentIndex(index); playTrack(song); }}
                                     />)
                                     ) : (
                                         <p>No songs found</p>
