@@ -61,10 +61,10 @@ export default function Home() {
                     <Link to="/home/results" className="nav-item"><IoMdMusicalNote /></Link> 
                     <Link to="/home/library" className="nav-item"><IoMdBookmark /></Link>
                 </div>
-                {token && <MusicPlayer token={token} playlist={currentPlaylist}/>}
+                {token && <MusicPlayer token={token} playlist={currentPlaylist} />}
             </header>
             <div> 
-                <Outlet context={{ setCurrentPlaylist }} />
+                <Outlet context={{ setCurrentPlaylist }} token={token} />
                 {user && location.pathname === '/home' && (
                   <div>
                     <h1>Welcome, {user.username}</h1>

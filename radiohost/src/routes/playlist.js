@@ -1,11 +1,12 @@
 import React, { useState, useEffect }  from "react"
 import { useParams } from "react-router-dom";  // To fetch params from the URL
 import "../styles/playlist.css"
+import defaultimg from "../assets/defaultalbum.png"
 import { IoIosArrowBack } from "react-icons/io";
 import { IoIosPlayCircle } from "react-icons/io"
 import SongCard from "../components/songcard.js"
 import axios from "axios"
-import { Link, Outlet, useOutletContext } from 'react-router-dom'
+import { Link, useOutletContext } from 'react-router-dom'
 
 
 export default function Playlist(){
@@ -67,8 +68,7 @@ export default function Playlist(){
             <Link to='/home/library' className='playlist-nav'><IoIosArrowBack /></Link>
             <div className="playlist-container">
                 <div className="playlist-header">
-                    <img className="playlist-art" />
-                    <Outlet />
+                    <img className="playlist-art" src={ defaultimg } />
                     {playlist ? (
                         <div className="playlist-info" key={playlist.id}>
                             <p id="identifier">Playlist</p>

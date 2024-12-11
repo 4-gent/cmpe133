@@ -46,6 +46,7 @@ export default function MusicPlayer(props) {
         }
     }, [props.playlist]);
 
+    //use effect songs
 
     // const query = "twice";
     // const [songs, setSongs] = useState([]);
@@ -197,7 +198,7 @@ export default function MusicPlayer(props) {
                         {isExpanded && (
                              <div className="queue" onClick={handleControlClick}>
                                 <h3>Playing From:</h3>
-                                <h3 style={{color: '#4F378B'}}> {props.playlist && props.playlist.title ? props.playlist.title : ""}</h3>
+                                <h3 style={{color: '#4F378B'}}> {props.playlist && props.playlist.title ? props.playlist.title : "Results"}</h3>
                             <div>
                                 {queue.length > 0 ? (
                                     queue.map((song, index) => <SongCard 
